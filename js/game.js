@@ -5,7 +5,7 @@ let world;
 function init(){
     canvas = getById("canvas");
     world = new World(canvas);
-    console.log("Mein character ist",world.enemies);
+    console.log(world);
     
 }
 
