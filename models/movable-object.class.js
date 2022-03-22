@@ -33,4 +33,10 @@ class MovableObject{
             this.x += this.speed;
         },1000/60)
     }
+    drawImages(images){
+        let i = this.current_img % images.length;
+        let path = images[i];
+        this.img = this.image_cache[path];
+        this.current_img++;
+    }
 }

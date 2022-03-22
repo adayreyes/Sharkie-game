@@ -52,12 +52,6 @@ function keyUp(event){
             break
     }
 }
-function moveCharacter(event){
-    console.log("hola")
-}
-
-
-
 
 function getById(id){
     return document.getElementById(id);

@@ -11,6 +11,7 @@ class Character extends MovableObject{
     "img/1.Sharkie/3.Swim/5.png",
     "img/1.Sharkie/3.Swim/6.png"];
     world;
+    swimming_sound = new Audio("audio/swimming.mp3");
     constructor(){
         super().loadImage("img/1.Sharkie/3.Swim/1.png");
         this.loadImages(this.IMAGES_STAYING);
@@ -20,13 +21,16 @@ class Character extends MovableObject{
     animate(){
         
         setInterval(()=>{
+            
             if(this.world.keyboard.RIGHT && this.x < 4300){
                 this.other_direction = false;
                 this.x += this.speed;
+                this.swimming_sound.play();
             }
             if(this.world.keyboard.LEFT && this.x > -700){
                 this.other_direction = true;
                 this.x -= this.speed;
+                this.swimming_sound.play();
                 
             }
             this.world.camera_x = -this.x;
@@ -35,11 +39,7 @@ class Character extends MovableObject{
 
         setInterval(()=>{
             if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT){
-                let i = this.current_img % this.IMAGES_STAYING.length;
-                let path = this.IMAGES_STAYING[i];
-                this.img = this.image_cache[path];
-                this.current_img++;
-                
+                this.drawImages(this.IMAGES_STAYING)
             }
         },150)
         

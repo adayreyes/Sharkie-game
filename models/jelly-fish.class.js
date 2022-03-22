@@ -17,12 +17,8 @@ class JellyFish extends MovableObject{
     animate(){
         this.moveLeft();
         setInterval(()=>{
-            let i = this.current_img % this.IMAGES_STAYING.length;
-            let path = this.IMAGES_STAYING[i];
-            this.img = this.image_cache[path];
-            this.current_img++;
+            this.drawImages(this.IMAGES_STAYING)
         },150)
-        this.current_img++
     }
     
 }

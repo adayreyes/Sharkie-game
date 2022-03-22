@@ -16,11 +16,7 @@ class Coin extends MovableObject{
     }
     animate(){
         setInterval(()=>{
-            let i = this.current_img % this.IMAGES_STAYING.length;
-            let path = this.IMAGES_STAYING[i];
-            this.img = this.image_cache[path];
-            this.current_img++;
+            this.drawImages(this.IMAGES_STAYING)
         },250)
-        this.current_img++
     }
 }
