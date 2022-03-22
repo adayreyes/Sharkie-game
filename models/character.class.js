@@ -31,14 +31,24 @@ class Character extends MovableObject{
                 this.other_direction = true;
                 this.x -= this.speed;
                 this.swimming_sound.play();
-                
+ 
+            }
+            if(this.world.keyboard.UP && this.y > -140){
+                this.y -= this.speed;
+                this.swimming_sound.play();
+ 
+            }
+            if(this.world.keyboard.DOWN && this.y < 250){
+                this.y += this.speed;
+                this.swimming_sound.play();
+ 
             }
             this.world.camera_x = -this.x;
         }, 1000/60)
        
 
         setInterval(()=>{
-            if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT){
+            if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN){
                 this.drawImages(this.IMAGES_STAYING)
             }
         },150)

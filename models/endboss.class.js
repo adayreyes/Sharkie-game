@@ -1,5 +1,5 @@
 class Endboss extends MovableObject{
-    x = 400;
+    x = 4000;
     y = 0;
     img = "img/2.Enemy/3 Final Enemy/2.floating/1.png";
     width = 400;
