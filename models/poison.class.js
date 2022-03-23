@@ -2,6 +2,7 @@ class Poison extends MovableObject{
     width = 60;
     height = 80;
     y = 400;
+    x = 200 + Math.random() * 5000;
     IMAGES_STAYING = [
         "img/4. Marcadores/Posión/Animada/1.png",
         "img/4. Marcadores/Posión/Animada/2.png",
@@ -12,9 +13,8 @@ class Poison extends MovableObject{
         "img/4. Marcadores/Posión/Animada/7.png",
         "img/4. Marcadores/Posión/Animada/8.png",
     ]
-    constructor(x){
+    constructor(){
         super().loadImage("img/4. Marcadores/Posión/Animada/1.png");
-        this.x = x;
         this.loadImages(this.IMAGES_STAYING);
         this.animate();
     }

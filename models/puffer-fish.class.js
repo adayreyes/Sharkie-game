@@ -1,5 +1,5 @@
 class PufferFish extends MovableObject{
-    x = 200 + Math.random() * 500;
+    x = 800 + Math.random() * 5000;
     y = 400 - Math.random() * 400;
     width = 60;
     height = 60;
