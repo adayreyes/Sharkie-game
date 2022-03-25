@@ -13,6 +13,7 @@ class World{
         this.keyboard = keyboard;
         this.draw();
         this.setWorld();
+        this.checkCollisions();
         
     }
     
@@ -38,7 +39,15 @@ class World{
         })
     }
     
-   
+    checkCollisions(){
+        setInterval(() => {
+            this.level.enemies.forEach(enemy =>{
+                if(this.character.isColliding(enemy)){
+                    console.log("hola" + enemy)
+                }
+            })
+        }, 1000);
+    }
 
     addObjectsToMap(objects){
         objects.forEach(obj => {

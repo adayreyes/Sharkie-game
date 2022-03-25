@@ -1,8 +1,5 @@
-class JellyFish extends MovableObject{
-    x = 800 + Math.random() * 5000;
-    y = 400 - Math.random() * 400;
-    width = 60;
-    height = 60;
+class JellyFish extends Enemy{
+
     IMAGES_STAYING = [
         "img/2.Enemy/2 Jelly fish/Regular damage/Lila 1.png",
         "img/2.Enemy/2 Jelly fish/Regular damage/Lila 2.png",
