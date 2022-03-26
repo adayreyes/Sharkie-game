@@ -9,6 +9,8 @@ class MovableObject{
     IMAGES_STAYING;
     speed = 0.15 + Math.random() * 1;
     other_direction = false;
+    life = 100;
+    dead = false;
 
     loadImage(path){
         this.img = new Image();
@@ -21,6 +23,14 @@ class MovableObject{
             this.image_cache[path] = img;
         });
 
+    }
+
+    hit(){
+        this.life -= 2;
+        if(this.life < 0){
+            this.life = 0
+            this.dead = true;
+        }
     }
 
     isColliding(mo){
