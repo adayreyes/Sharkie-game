@@ -1,9 +1,18 @@
+/**
+ * @class Endboss
+ * @extends Enemy
+ */
 class Endboss extends Enemy{
     x = 4000;
     y = 0;
     img = "img/2.Enemy/3 Final Enemy/2.floating/1.png";
     width = 400;
     height = 400;
+
+    /**
+     * Array with all appearing-images paths
+     * @type {Array}
+     */
     IMAGES_APPEARING = [
         "img/2.Enemy/3 Final Enemy/1.Introduce/1.png",
         "img/2.Enemy/3 Final Enemy/1.Introduce/2.png",
@@ -38,7 +47,17 @@ class Endboss extends Enemy{
 
     };
 
+    /**
+     * This function animates the {@link Endboss}
+     */
     animate(){
+        this.animateMovement();
+    }
+    
+    /**
+     * Draw the default-images every 150ms
+     */
+    animateMovement(){
         setInterval(()=>{
             this.drawImages(this.IMAGES_STAYING)
         },150)

@@ -2,16 +2,29 @@ let canvas;
 let world;
 let keyboard = new Keyboard;
 
+/**
+ * this function create the world and get the canvas 
+ */
 function init(){
     canvas = getById("canvas");
     world = new World(canvas,keyboard);
     console.log(world);
-    document.body.addEventListener("keydown",keyDown);
-    document.body.addEventListener("keyup",keyUp);
-
-    
+    checkIfKeyIsPressed(); 
 }
 
+/**
+ * check if a key is pressed
+ */
+function checkIfKeyIsPressed(){
+    document.body.addEventListener("keydown",keyDown);
+    document.body.addEventListener("keyup",keyUp);
+}
+
+/**
+ * Check if the user press one of arrows of the keyboard
+ * If so, change the variable at Keyboard @see {@link keyboard.js} to true
+ * @param {event} event - 
+ */
 function keyDown(event){
     let key_code = event.keyCode;
     switch (key_code){
@@ -32,6 +45,12 @@ function keyDown(event){
             break
     }
 }
+
+/**
+ * Check if the user release one of arrows of the keyboard
+ * If so, change the variable at Keyboard @see {@link keyboard.js} to false
+ * @param {event} event - 
+ */
 function keyUp(event){
     let key_code = event.keyCode;
     switch (key_code){
@@ -53,6 +72,11 @@ function keyUp(event){
     }
 }
 
+/**
+ * with this function we can get the id from an element faster
+ * @param {string} id - is the id from the HTML element
+ * @returns {HTMLBodyElement} - the element we want to use
+ */
 function getById(id){
     return document.getElementById(id);
 }

@@ -1,3 +1,7 @@
+/**
+ * @class Poison 
+ * @extends MovableObject
+ */
 class Poison extends MovableObject{
     width = 60;
     height = 80;

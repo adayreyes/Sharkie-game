@@ -1,3 +1,7 @@
+/**
+ * @class Heart 
+ * @extends MovableObject
+ */
 class Heart extends MovableObject{
     width = 60;
     height = 60;

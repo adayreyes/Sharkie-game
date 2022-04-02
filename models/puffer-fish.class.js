@@ -1,3 +1,7 @@
+/**
+ * @class PufferFish
+ * @extends Enemy
+ */
 class PufferFish extends Enemy{
     IMAGES_STAYING = [
         "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim1.png",

@@ -1,3 +1,7 @@
+/**
+ * @class JellyFish 
+ * @extends Enemy
+ */
 class JellyFish extends Enemy{
 
     IMAGES_STAYING = [

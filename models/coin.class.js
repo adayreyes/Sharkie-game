@@ -1,3 +1,7 @@
+/**
+ * @class Coin
+ * @extends MovableObject
+ */
 class Coin extends MovableObject{
     width = 40;
     height = 40;
