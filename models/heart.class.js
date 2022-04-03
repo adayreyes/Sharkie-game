@@ -1,8 +1,8 @@
 /**
  * @class Heart 
- * @extends MovableObject
+ * @extends StaticObject
  */
-class Heart extends MovableObject{
+class Heart extends StaticObject{
     width = 60;
     height = 60;
     x = 200 + Math.random() * 5000;

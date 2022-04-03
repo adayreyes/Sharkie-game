@@ -1,13 +1,13 @@
 /**
  * @class Poison 
- * @extends MovableObject
+ * @extends StaticObject
  */
-class Poison extends MovableObject{
+class Poison extends StaticObject{
     width = 60;
     height = 80;
     y = 400;
     x = 200 + Math.random() * 5000;
-    IMAGES_STAYING = [
+    IMAGES = [
         "img/4. Marcadores/Posión/Animada/1.png",
         "img/4. Marcadores/Posión/Animada/2.png",
         "img/4. Marcadores/Posión/Animada/3.png",
@@ -18,13 +18,12 @@ class Poison extends MovableObject{
         "img/4. Marcadores/Posión/Animada/8.png",
     ]
     constructor(){
-        super().loadImage("img/4. Marcadores/Posión/Animada/1.png");
-        this.loadImages(this.IMAGES_STAYING);
+        super().loadImages(this.IMAGES);
         this.animate();
     }
     animate(){
         setInterval(()=>{
-            this.drawImages(this.IMAGES_STAYING)
+            this.drawImages(this.IMAGES)
         },200)
     }
 

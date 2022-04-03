@@ -1,10 +1,10 @@
 /**
  * Class for statusbars like health bar
  * @class Statusbar 
- * @extends MovableObject
+ * @extends StaticObject
  */
-class Statusbar extends MovableObject {
-    IMAGES_STAYING = [
+class Statusbar extends StaticObject {
+    IMAGES = [
         " img/4. Marcadores/green/Life/100_  copia 2.png",
         "img/4. Marcadores/green/Life/80_  copia 3.png",
         "img/4. Marcadores/green/Life/60_  copia 3.png",
@@ -16,18 +16,16 @@ class Statusbar extends MovableObject {
     width = 200;
     height = 50;
     x = -40;
+    speed = 10;
+    world;
     
     
     constructor(y){
         super().loadImage(" img/4. Marcadores/green/Life/100_  copia 2.png");
-        this.loadImages(this.IMAGES_STAYING);
+        this.loadImages(this.IMAGES);
         this.y = y;
     
     }
 
-    /* animate(){
-        setInterval(()=>{
-            this.drawImages(this.STATUS_IMAGES)
-        },250)
-    } */
+    
 }

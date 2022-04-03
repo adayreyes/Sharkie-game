@@ -75,11 +75,17 @@ class Character extends MovableObject{
             if(this.world.keyboard.RIGHT && this.x < 4300){
                 this.other_direction = false;
                 this.x += this.speed;
+                this.world.level.statusbars.forEach(element => {
+                    element.x += this.speed
+                });
                 this.swimming_sound.play();
             }
             if(this.world.keyboard.LEFT && this.x > -700){
                 this.other_direction = true;
                 this.x -= this.speed;
+                this.world.level.statusbars.forEach(element => {
+                    element.x -= this.speed
+                });
                 this.swimming_sound.play();
  
             }

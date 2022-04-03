@@ -67,12 +67,12 @@ class World{
         this.ctx.clearRect(0,0, this.canvas.width,this.canvas.height);
         this.ctx.translate(this.camera_x,0);
         this.addObjectsToMap(this.level.background_objects);
-        this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.items.coins);
         this.addObjectsToMap(this.level.items.poisons);
         this.addObjectsToMap(this.level.items.hearts);
         this.addObjectsToMap(this.level.statusbars);
+        this.addToMap(this.character);
         this.ctx.translate(-this.camera_x,0);
         
         let self = this;
@@ -114,7 +114,9 @@ class World{
            this.flipImage(mo);
         } 
         mo.draw(this.ctx);
-        mo.drawFrame(this.ctx);
+        if(mo instanceof Enemy || mo instanceof Character){
+            mo.drawFrame(this.ctx);
+        }
         if(mo.other_direction){
            this.flipImageBack(mo);
         }
