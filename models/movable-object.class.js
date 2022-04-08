@@ -123,14 +123,7 @@ class MovableObject{
         return timepassed < 1
     }
 
-    /**
-     * Check if the hitbox from both object are in the same area.
-     * @param {object} mo - {@link MovableObject}. 
-     * @returns {boolean}
-     */
-    isColliding(mo){
-        return this.x + this.width > mo.x && this.y + this.height > mo.y && this.x < mo.x && this.y < mo.y + mo.height 
-    }
+    
 
     /**
      * Draw the img from {@link MovableObject#img} on the canvas.
@@ -144,6 +137,13 @@ class MovableObject{
      * Draw a hitbox around the objects with the class {@link Character} or {@link Enemy}
      * @param {CanvasRenderingContext2D} ctx - Canvas Context
      */
+    drawSharkieFrame(ctx){
+        ctx.beginPath();
+        ctx.lineWidth = "5";
+        ctx.strokeStyle = "blue";
+        ctx.rect(this.x+60,this.y+150,this.width-120,this.height-230);
+        ctx.stroke();
+    }
     drawFrame(ctx){
         ctx.beginPath();
         ctx.lineWidth = "5";
@@ -151,6 +151,8 @@ class MovableObject{
         ctx.rect(this.x,this.y,this.width,this.height);
         ctx.stroke();
     }
+
+    
     /**
      * Move the object to the left, changing de value of {@link MovableObject#x}
      */

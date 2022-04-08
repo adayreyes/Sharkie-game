@@ -65,6 +65,18 @@ class Character extends MovableObject{
         this.moveCharacter();
         this.animateMovement();
     } 
+    /**
+     * Check if the hitbox from Sharkie is colliding with the hitbox from the enemies.
+     * @param {object} mo - {@link MovableObject}. 
+     * @returns {boolean}
+     */
+     isColliding(mo){
+        return this.x+60 + this.width-120 > mo.x && this.y+150 + this.height-230 > mo.y && this.x+60 < mo.x && this.y+150 < mo.y + mo.height 
+    }
+    
+    isCollidingWithEndboss(){
+        return this.x+60 + this.width-120 > mo.x && this.y+150 + this.height-230 > mo.y && this.x+60 < mo.x && this.y+150 < mo.y + mo.height
+    }
 
     /**
      * Move Sharkie around the map and plays {@link Character#swimming_sound}

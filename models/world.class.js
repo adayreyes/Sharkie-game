@@ -72,6 +72,7 @@ class World{
         this.addObjectsToMap(this.level.items.poisons);
         this.addObjectsToMap(this.level.items.hearts);
         this.addObjectsToMap(this.level.statusbars);
+        this.addToMap(this.level.endboss);
         this.addToMap(this.character);
         this.ctx.translate(-this.camera_x,0);
         
@@ -114,8 +115,14 @@ class World{
            this.flipImage(mo);
         } 
         mo.draw(this.ctx);
-        if(mo instanceof Enemy || mo instanceof Character){
-            mo.drawFrame(this.ctx);
+        if(mo instanceof Character){
+            mo.drawSharkieFrame(this.ctx);
+        }
+        if(mo instanceof Enemy){
+            mo.drawFrame(this.ctx)
+        }
+        if (mo instanceof Endboss){
+            mo.drawEndbossFrame(this.ctx)
         }
         if(mo.other_direction){
            this.flipImageBack(mo);

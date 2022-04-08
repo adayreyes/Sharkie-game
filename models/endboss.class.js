@@ -1,8 +1,8 @@
 /**
  * @class Endboss
- * @extends Enemy
+ * @extends MovableObject
  */
-class Endboss extends Enemy{
+class Endboss extends MovableObject{
     x = 4000;
     y = 0;
     img = "img/2.Enemy/3 Final Enemy/2.floating/1.png";
@@ -52,6 +52,17 @@ class Endboss extends Enemy{
      */
     animate(){
         this.animateMovement();
+    }
+    /**
+     * Draw a hitbox around the {@link Endboss}
+     * @param {CanvasRenderingContext2D} ctx - Canvas Context
+     */
+     drawEndbossFrame(ctx){
+        ctx.beginPath();
+        ctx.lineWidth = "5";
+        ctx.strokeStyle = "blue";
+        ctx.rect(this.x+30,this.y+180,this.width-100,this.height-250);
+        ctx.stroke();
     }
     
     /**
