@@ -93,6 +93,15 @@ class World{
                     enemy.hit();
                 }
             })
+            this.level.items.coins.forEach(coin =>{
+                if(this.character.isColliding(coin)){
+                    if(this.level.statusbars[2].current_img == 5){
+                        this.level.statusbars[2].current_img = 0
+                    }
+                    this.level.statusbars[2].current_img ++;
+                    this.level.statusbars[2].img = this.level.statusbars[2].image_cache[this.level.statusbars[2].IMAGES[this.level.statusbars[2].current_img]];
+                }
+            })
         }, 200);
     }
 
