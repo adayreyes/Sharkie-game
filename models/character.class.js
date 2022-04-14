@@ -119,11 +119,15 @@ class Character extends MovableObject{
      * Check if Sharkie is moving, hurt or dead and draw the respective images.
      */
     animateMovement(){
-        setInterval(()=>{
+        let interval = setInterval(()=>{
             if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN){
                 this.drawImages(this.IMAGES_STAYING)
             } else if(this.dead == true){
-                this.drawImages(this.IMAGES_DEAD)
+                this.drawImages(this.IMAGES_DEAD);
+                setTimeout(() => {
+                    clearInterval(interval);
+                    this.loadImage("img/1.Sharkie/6.dead/1.Poisoned/12.png")
+                }, 2000);
             } else if(this.isHurt()){
                 this.drawImages(this.IMAGES_HURT);
             }

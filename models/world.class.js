@@ -86,20 +86,52 @@ class World{
      * Check if the hitbox from each {@link Enemy} is colliding with the hitbox from the {@link Character}
      */
     checkCollisions(){
-        setInterval(() => {
+        this.collisionWithCoin();
+        this.collisionWithEnemy();
+        this.collisionWithPoison();
+    }
+    collisionWithEnemy(){
+        let interval = setInterval(() => {
             this.level.enemies.forEach(enemy =>{
                 if(this.character.isColliding(enemy)){
                     this.character.hit();
-                    enemy.hit();
                 }
             })
+        }, 200);
+    }
+    
+    collisionWithCoin(){
+        let full = false;
+        let interval = setInterval(() => {
             this.level.items.coins.forEach(coin =>{
                 if(this.character.isColliding(coin)){
                     if(this.level.statusbars[2].current_img == 5){
-                        this.level.statusbars[2].current_img = 0
+                        this.level.statusbars[2].current_img = 4;
+                        full = true;
                     }
-                    this.level.statusbars[2].current_img ++;
-                    this.level.statusbars[2].img = this.level.statusbars[2].image_cache[this.level.statusbars[2].IMAGES[this.level.statusbars[2].current_img]];
+                    if(!full){
+                        coin.y = -50
+                        this.level.statusbars[2].current_img ++;
+                        this.level.statusbars[2].img = this.level.statusbars[2].image_cache[this.level.statusbars[2].IMAGES[this.level.statusbars[2].current_img]];
+                    }
+                }
+            })
+        }, 200);
+    }
+    collisionWithPoison(){
+        let full = false;
+        let interval = setInterval(() => {
+            this.level.items.poisons.forEach(poison =>{
+                if(this.character.isColliding(poison)){
+                    if(this.level.statusbars[1].current_img == 5){
+                        this.level.statusbars[1].current_img = 4
+                        full = true;
+                    }
+                    if(!full){
+                        poison.y = -100
+                        this.level.statusbars[1].current_img ++;
+                        this.level.statusbars[1].img = this.level.statusbars[1].image_cache[this.level.statusbars[1].IMAGES[this.level.statusbars[1].current_img]];
+                    }
                 }
             })
         }, 200);

@@ -166,7 +166,7 @@ class MovableObject{
      * Move the object to the right, changing de value of {@link MovableObject#x}
      */
     moveRight(){
-        setInterval(()=>{
+       setInterval(()=>{
             this.x += this.speed;
         },1000/60)
     }
