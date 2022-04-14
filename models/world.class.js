@@ -86,18 +86,29 @@ class World{
      * Check if the hitbox from each {@link Enemy} is colliding with the hitbox from the {@link Character}
      */
     checkCollisions(){
-        this.collisionWithCoin();
         this.collisionWithEnemy();
+        this.collisionWithCoin();
         this.collisionWithPoison();
+        this.collisionWithHeart();
     }
     collisionWithEnemy(){
+        let empty = false;
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy =>{
                 if(this.character.isColliding(enemy)){
                     this.character.hit();
+                    if(this.level.statusbars[0].current_img <= 0){
+                        this.level.statusbars[0].current_img = 0;
+                        empty = true;
+                        this.character.dead = true;
+                    }
+                    if(!empty){
+                        this.level.statusbars[0].current_img --;
+                        this.level.statusbars[0].img = this.level.statusbars[0].image_cache[this.level.statusbars[0].IMAGES[this.level.statusbars[0].current_img]];
+                    }
                 }
             })
-        }, 200);
+        }, 300);
     }
     
     collisionWithCoin(){
@@ -114,6 +125,20 @@ class World{
                         this.level.statusbars[2].current_img ++;
                         this.level.statusbars[2].img = this.level.statusbars[2].image_cache[this.level.statusbars[2].IMAGES[this.level.statusbars[2].current_img]];
                     }
+                }
+            })
+        }, 200);
+    }
+    collisionWithHeart(){
+        let interval = setInterval(() => {
+            this.level.items.hearts.forEach(heart =>{
+                if(this.character.isColliding(heart)){
+                    if(this.level.statusbars[0].current_img < 5){
+                    heart.y = -50
+                    this.level.statusbars[0].current_img ++;
+                    this.level.statusbars[0].img = this.level.statusbars[0].image_cache[this.level.statusbars[0].IMAGES[this.level.statusbars[0].current_img]];
+                    }
+
                 }
             })
         }, 200);

@@ -127,7 +127,7 @@ class Character extends MovableObject{
                 setTimeout(() => {
                     clearInterval(interval);
                     this.loadImage("img/1.Sharkie/6.dead/1.Poisoned/12.png")
-                }, 2000);
+                }, 1000);
             } else if(this.isHurt()){
                 this.drawImages(this.IMAGES_HURT);
             }
