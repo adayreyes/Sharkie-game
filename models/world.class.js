@@ -108,7 +108,7 @@ class World{
                     }
                 }
             })
-        }, 300);
+        }, 1000);
     }
     
     collisionWithCoin(){
