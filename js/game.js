@@ -41,7 +41,8 @@ function keyDown(event){
             keyboard.DOWN = true;
             break
         case 32:
-            keyboard.DOWN = true;
+            keyboard.SPACE = true;
+            world.character.attack();
             break
     }
 }
@@ -67,7 +68,7 @@ function keyUp(event){
             keyboard.DOWN = false;
             break
         case 32:
-            keyboard.DOWN = false;
+            keyboard.SPACE = false;
             break
     }
 }

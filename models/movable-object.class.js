@@ -74,6 +74,8 @@ class MovableObject{
      * @type {boolean}
      */
     dead = false;
+    current_attack_img = 0;
+    
 
 
     /**
@@ -104,13 +106,14 @@ class MovableObject{
      * Set the time when this function is called
      */
     hit(){
-        this.life -= 2;
-        if(this.life < 0){
-            this.life = 0
-            this.dead = true;
-        } else {
-            this.last_hit = new Date().getTime();
-        }
+        this.last_hit = new Date().getTime();
+    }
+    shock(){
+        this.last_shock = new Date().getTime();
+    }
+
+    attack(){
+        this.last_attack = new Date().getTime();
     }
 
     /**
@@ -122,8 +125,17 @@ class MovableObject{
         timepassed = timepassed / 1000;
         return timepassed < 1
     }
+    isElectrocuted(){
+        let timepassed = new Date().getTime() - this.last_shock;
+        timepassed = timepassed / 1000;
+        return timepassed < 1
+    }
 
-    
+    isAttacking(){
+        let timepassed = new Date().getTime() - this.last_attack;
+        timepassed = timepassed / 1000;
+        return timepassed < 1;
+    }
 
     /**
      * Draw the img from {@link MovableObject#img} on the canvas.
@@ -181,4 +193,11 @@ class MovableObject{
         this.img = this.image_cache[path];
         this.current_img++;
     }
+    drawAttackImages(images){
+        let i = this.current_attack_img % images.length;
+        let path = images[i];
+        this.img = this.image_cache[path];
+        this.current_attack_img++;
+    }
+   
 }

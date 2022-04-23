@@ -87,16 +87,31 @@ class World{
      */
     checkCollisions(){
         this.collisionWithEnemy();
+        this.editHealthbar();
         this.collisionWithCoin();
         this.collisionWithPoison();
         this.collisionWithHeart();
     }
     collisionWithEnemy(){
-        let empty = false;
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy =>{
                 if(this.character.isColliding(enemy)){
-                    this.character.hit();
+                    if(enemy instanceof PufferFish){
+                        this.character.hit();
+                    }
+                    if(enemy instanceof JellyFish){
+                        this.character.shock();
+                    }
+                }
+            })
+        }, 150);
+    }
+    
+    editHealthbar(){
+        let empty = false;
+        let interval = setInterval(() => {
+            this.level.enemies.forEach(enemy => {
+                if(this.character.isColliding(enemy)){
                     if(this.level.statusbars[0].current_img <= 0){
                         this.level.statusbars[0].current_img = 0;
                         empty = true;
@@ -105,11 +120,12 @@ class World{
                     if(!empty){
                         this.level.statusbars[0].current_img --;
                         this.level.statusbars[0].img = this.level.statusbars[0].image_cache[this.level.statusbars[0].IMAGES[this.level.statusbars[0].current_img]];
-                    }
-                }
+                    }  
+              }
             })
-        }, 1000);
-    }
+        }, 500);
+     }
+    
     
     collisionWithCoin(){
         let full = false;
