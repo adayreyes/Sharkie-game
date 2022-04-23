@@ -38,6 +38,7 @@ class World{
      */
     camera_x = 0;
     
+   
     /**
      * Set the values of {@link World#canvas} and {@link World#keyboard}.
      * @param {HTMLElement} canvas - Canvas element

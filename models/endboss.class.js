@@ -40,6 +40,7 @@ class Endboss extends MovableObject{
         "img/2.Enemy/3 Final Enemy/2.floating/12.png",
         "img/2.Enemy/3 Final Enemy/2.floating/13.png",
     ]
+    hadFirstContact = false;
     constructor(){
         super().loadImage("img/2.Enemy/3 Final Enemy/1.Introduce/1.png");
         this.loadImages(this.IMAGES_STAYING);
@@ -65,7 +66,6 @@ class Endboss extends MovableObject{
         ctx.rect(this.x+30,this.y+180,this.width-100,this.height-250);
         ctx.stroke();
     }
-    hadFirstContact = false;
     
     /**
      * Draw the default-images every 150ms
@@ -74,14 +74,15 @@ class Endboss extends MovableObject{
         let i = 0;
         setTimeout(() => {
             setInterval(()=>{
-                if(world.character.x > 3700){
-                    if(i < 10 && !this.hadFirstContact){
-                        this.drawImages(this.IMAGES_APPEARING)
-                        this.hadFirstContact = true;
-                        i++
-                    }
-                } else if(this.hadFirstContact){
-                    this.drawImages(this.IMAGES_STAYING)
+                if(world.character.x > 3300){
+                    this.hadFirstContact = true;
+                }
+                if(this.hadFirstContact && i < 10){
+                    this.drawImages(this.IMAGES_APPEARING);
+                    i++
+                }
+                if(this.hadFirstContact && i == 10){
+                    this.drawImages(this.IMAGES_STAYING);
                 }
             },150)
             
