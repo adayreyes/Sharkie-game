@@ -137,6 +137,7 @@ class MovableObject{
         return timepassed < 1;
     }
 
+
     /**
      * Draw the img from {@link MovableObject#img} on the canvas.
      * @param {CanvasRenderingContext2D} ctx - Canvas Context
@@ -153,7 +154,7 @@ class MovableObject{
         ctx.beginPath();
         ctx.lineWidth = "5";
         ctx.strokeStyle = "blue";
-        ctx.rect(this.x+60,this.y+150,this.width-120,this.height-230);
+        ctx.rect(this.x+70,this.y+160,this.width-150,this.height-250);
         ctx.stroke();
     }
     drawFrame(ctx){

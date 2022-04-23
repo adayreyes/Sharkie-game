@@ -74,7 +74,7 @@ class Endboss extends MovableObject{
         let i = 0;
         setTimeout(() => {
             setInterval(()=>{
-                if(world.character.x > 3300){
+                if(world.character.x > 3550){
                     this.hadFirstContact = true;
                 }
                 if(this.hadFirstContact && i < 10){

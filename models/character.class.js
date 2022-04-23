@@ -6,10 +6,10 @@ class Character extends MovableObject{
     x = -40;
     y = 60;
     width = 300;
-    speed = 10;
+    speed = 3;
     height = 300;
     world;
-    IMAGES_STAYING = ["img/1.Sharkie/3.Swim/1.png",
+    IMAGES_SWIMMING = ["img/1.Sharkie/3.Swim/1.png",
     "img/1.Sharkie/3.Swim/2.png",
     "img/1.Sharkie/3.Swim/3.png",
     "img/1.Sharkie/3.Swim/4.png",
@@ -32,6 +32,26 @@ class Character extends MovableObject{
         "img/1.Sharkie/6.dead/1.Poisoned/10.png",
         "img/1.Sharkie/6.dead/1.Poisoned/11.png",
         "img/1.Sharkie/6.dead/1.Poisoned/12.png",
+    ]
+    IMAGES_STAYING = [
+        "img/1.Sharkie/1.IDLE/1.png",
+        "img/1.Sharkie/1.IDLE/2.png",
+        "img/1.Sharkie/1.IDLE/3.png",
+        "img/1.Sharkie/1.IDLE/4.png",
+        "img/1.Sharkie/1.IDLE/5.png",
+        "img/1.Sharkie/1.IDLE/6.png",
+        "img/1.Sharkie/1.IDLE/7.png",
+        "img/1.Sharkie/1.IDLE/8.png",
+        "img/1.Sharkie/1.IDLE/9.png",
+        "img/1.Sharkie/1.IDLE/10.png",
+        "img/1.Sharkie/1.IDLE/11.png",
+        "img/1.Sharkie/1.IDLE/12.png",
+        "img/1.Sharkie/1.IDLE/13.png",
+        "img/1.Sharkie/1.IDLE/14.png",
+        "img/1.Sharkie/1.IDLE/15.png",
+        "img/1.Sharkie/1.IDLE/16.png",
+        "img/1.Sharkie/1.IDLE/17.png",
+        "img/1.Sharkie/1.IDLE/18.png",
     ]
     /**
      * Array with all the hurt-images paths
@@ -62,6 +82,7 @@ class Character extends MovableObject{
        
         
     ]
+    isMoving = false;
     /**
      * Audio that is played when Sharkie is swimming.
      * @type {Audio}
@@ -70,6 +91,7 @@ class Character extends MovableObject{
 
     constructor(){
         super().loadImage("img/1.Sharkie/3.Swim/1.png");
+        this.loadImages(this.IMAGES_SWIMMING);
         this.loadImages(this.IMAGES_STAYING);
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_HURT);
@@ -91,7 +113,7 @@ class Character extends MovableObject{
      * @returns {boolean}
      */
      isColliding(mo){
-        return this.x+60 + this.width-120 > mo.x && this.y+150 + this.height-230 > mo.y && this.x+60 < mo.x && this.y+150 < mo.y + mo.height 
+        return this.x+70 + this.width-150 > mo.x && this.y+160 + this.height-250 > mo.y && this.x+70 < mo.x && this.y+160 < mo.y + mo.height 
     }
     
     isCollidingWithEndboss(){
@@ -139,12 +161,14 @@ class Character extends MovableObject{
      * Check if Sharkie is moving, hurt or dead and draw the respective images.
      */
     animateMovement(){
-        
+        let stay_interval = setInterval(() => {
+            if(!this.isMoving && !this.dead && !this.isAttacking() && !this.isHurt() && !this.isElectrocuted()){
+                this.drawImages(this.IMAGES_STAYING)
+            }
+        }, 150);
         let hurt_interval = setInterval(() => {
             if(this.isHurt()){
                this.drawImages(this.IMAGES_HURT); 
-            
-
             }
             else if(this.isElectrocuted()){
                 this.drawImages(this.IMAGES_SHOCK);
@@ -155,9 +179,12 @@ class Character extends MovableObject{
         let move_interval = setInterval(() => {
             if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN){
                 if(!this.isHurt() && !this.isElectrocuted()){
-                    this.drawImages(this.IMAGES_STAYING)
+                    this.drawImages(this.IMAGES_SWIMMING);
+                    this.isMoving = true;
                 }
-            } 
+            } else{
+                this.isMoving = false;
+            }
         }, 200);
         
         let attack_interval = setInterval(() => {
