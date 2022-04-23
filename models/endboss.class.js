@@ -43,6 +43,7 @@ class Endboss extends MovableObject{
     constructor(){
         super().loadImage(this.img);
         this.loadImages(this.IMAGES_STAYING);
+        this.loadImages(this.IMAGES_APPEARING);
         this.animate();
 
     };
@@ -64,14 +65,28 @@ class Endboss extends MovableObject{
         ctx.rect(this.x+30,this.y+180,this.width-100,this.height-250);
         ctx.stroke();
     }
+    hadFirstContact = false;
     
     /**
      * Draw the default-images every 150ms
      */
     animateMovement(){
-        setInterval(()=>{
-            this.drawImages(this.IMAGES_STAYING)
-        },150)
+        let i = 0;
+        setTimeout(() => {
+            setInterval(()=>{
+                if(i < 10){
+                    this.drawImages(this.IMAGES_APPEARING)
+                } else{
+                    this.drawImages(this.IMAGES_STAYING)
+                }
+                i++
+                if(world.character.x > 3700 && !this.hadFirstContact){
+                    i = 0;
+                    this.hadFirstContact = true;
+                }
+            },150)
+            
+        }, 1000);
     }
 
 }
