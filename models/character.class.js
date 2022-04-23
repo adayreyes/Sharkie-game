@@ -6,7 +6,7 @@ class Character extends MovableObject{
     x = -40;
     y = 60;
     width = 300;
-    speed = 10;
+    speed = 3;
     height = 300;
     world;
     IMAGES_STAYING = ["img/1.Sharkie/3.Swim/1.png",
@@ -49,7 +49,8 @@ class Character extends MovableObject{
         "img/1.Sharkie/5.Hurt/2.Electric shock/2.png",
         "img/1.Sharkie/5.Hurt/2.Electric shock/3.png"
     ]
-    IMAGES_ATTACK = ["img/1.Sharkie/3.Swim/1.png",
+    IMAGES_ATTACK = [
+        "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/8.png",
         "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/1.png",
         "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/2.png",
         "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/3.png",
@@ -153,7 +154,9 @@ class Character extends MovableObject{
     
         let move_interval = setInterval(() => {
             if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN){
+                if(!this.isHurt() && !this.isElectrocuted()){
                     this.drawImages(this.IMAGES_STAYING)
+                }
             } 
         }, 200);
         
