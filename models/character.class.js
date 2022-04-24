@@ -78,9 +78,19 @@ class Character extends MovableObject{
         "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/5.png",
         "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/6.png",
         "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/7.png",
-        "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/8.png",
+        "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/8.png"
        
         
+    ];
+    IMAGES_SLAPPING = [
+        "img/1.Sharkie/4.Attack/Fin slap/1.png",
+        "img/1.Sharkie/4.Attack/Fin slap/2.png",
+        "img/1.Sharkie/4.Attack/Fin slap/3.png",
+        "img/1.Sharkie/4.Attack/Fin slap/4.png",
+        "img/1.Sharkie/4.Attack/Fin slap/5.png",
+        "img/1.Sharkie/4.Attack/Fin slap/6.png",
+        "img/1.Sharkie/4.Attack/Fin slap/7.png",
+        "img/1.Sharkie/4.Attack/Fin slap/8.png"
     ]
     isMoving = false;
     /**
@@ -97,6 +107,7 @@ class Character extends MovableObject{
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_SHOCK);
         this.loadImages(this.IMAGES_ATTACK);
+        this.loadImages(this.IMAGES_SLAPPING);
         this.animate();
     }
     
@@ -112,12 +123,8 @@ class Character extends MovableObject{
      * @param {object} mo - {@link MovableObject}. 
      * @returns {boolean}
      */
-     isColliding(mo){
+     sharkieIsColliding(mo){
         return this.x+70 + this.width-150 > mo.x && this.y+160 + this.height-250 > mo.y && this.x+70 < mo.x && this.y+160 < mo.y + mo.height 
-    }
-    
-    isCollidingWithEndboss(){
-        return this.x+60 + this.width-120 > mo.x && this.y+150 + this.height-230 > mo.y && this.x+60 < mo.x && this.y+150 < mo.y + mo.height
     }
 
     /**
@@ -132,7 +139,7 @@ class Character extends MovableObject{
                 this.world.level.statusbars.forEach(element => {
                     element.x += this.speed
                 });
-                this.swimming_sound.play();
+                /* this.swimming_sound.play(); */
             }
             if(this.world.keyboard.LEFT && this.x > -700){
                 this.other_direction = true;
@@ -140,17 +147,17 @@ class Character extends MovableObject{
                 this.world.level.statusbars.forEach(element => {
                     element.x -= this.speed
                 });
-                this.swimming_sound.play();
+                /* this.swimming_sound.play(); */
  
             }
             if(this.world.keyboard.UP && this.y > -140){
                 this.y -= this.speed;
-                this.swimming_sound.play();
+                /* this.swimming_sound.play(); */
  
             }
             if(this.world.keyboard.DOWN && this.y < 250){
                 this.y += this.speed;
-                this.swimming_sound.play();
+                /* this.swimming_sound.play(); */
  
             }
             this.world.camera_x = -this.x;
@@ -162,7 +169,7 @@ class Character extends MovableObject{
      */
     animateMovement(){
         let stay_interval = setInterval(() => {
-            if(!this.isMoving && !this.dead && !this.isAttacking() && !this.isHurt() && !this.isElectrocuted()){
+            if(!this.isMoving && !this.dead && !this.isAttacking() && !this.isHurt() && !this.isElectrocuted() && !this.isSlapping()){
                 this.drawImages(this.IMAGES_STAYING)
             }
         }, 150);
@@ -187,11 +194,15 @@ class Character extends MovableObject{
             }
         }, 200);
         
+        
         let attack_interval = setInterval(() => {
             if(this.isAttacking()){
                 this.drawAttackImages(this.IMAGES_ATTACK);
+            } else if(this.isSlapping()){
+                this.drawAttackImages(this.IMAGES_SLAPPING);
             } else{
                 this.current_attack_img = 0;
+
             }
         }, 100);
         let dead_interval = setInterval(() => {

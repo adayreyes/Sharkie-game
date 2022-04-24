@@ -8,7 +8,7 @@ class ThrowableObject extends MovableObject {
         this.height = 40;
         this.throwBubble(100,400);
     }
-
+    
     throwBubble(){
         setInterval(() => {
             this.x += 10;

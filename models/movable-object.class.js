@@ -108,12 +108,22 @@ class MovableObject{
     hit(){
         this.last_hit = new Date().getTime();
     }
+    isColliding(mo){
+        return this.x + this.width > mo.x && this.y + this.height > mo.y && this.x < mo.x && this.y < mo.y + mo.height 
+    }
+    
+    isCollidingWithEndboss(){
+        return this.x+60 + this.width-120 > mo.x && this.y+150 + this.height-230 > mo.y && this.x+60 < mo.x && this.y+150 < mo.y + mo.height
+    }
     shock(){
         this.last_shock = new Date().getTime();
     }
 
     attack(){
         this.last_attack = new Date().getTime();
+    }
+    slap(){
+        this.last_slap = new Date().getTime();
     }
 
     /**
@@ -133,6 +143,11 @@ class MovableObject{
 
     isAttacking(){
         let timepassed = new Date().getTime() - this.last_attack;
+        timepassed = timepassed / 1000;
+        return timepassed < 1;
+    }
+    isSlapping(){
+        let timepassed = new Date().getTime() - this.last_slap;
         timepassed = timepassed / 1000;
         return timepassed < 1;
     }

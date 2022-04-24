@@ -95,11 +95,13 @@ class World{
         this.collisionWithCoin();
         this.collisionWithPoison();
         this.collisionWithHeart();
+        this.bubbleCollisionWithEnemies();
+        this.slapEnemies();
     }
     collisionWithEnemy(){
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy =>{
-                if(this.character.isColliding(enemy)){
+                if(this.character.sharkieIsColliding(enemy)){
                     if(enemy instanceof PufferFish){
                         this.character.hit();
                     }
@@ -115,7 +117,7 @@ class World{
         let empty = false;
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy => {
-                if(this.character.isColliding(enemy)){
+                if(this.character.sharkieIsColliding(enemy)){
                     if(this.level.statusbars[0].current_img <= 0){
                         this.level.statusbars[0].current_img = 0;
                         empty = true;
@@ -135,7 +137,7 @@ class World{
         let full = false;
         let interval = setInterval(() => {
             this.level.items.coins.forEach(coin =>{
-                if(this.character.isColliding(coin)){
+                if(this.character.sharkieIsColliding(coin)){
                     if(this.level.statusbars[2].current_img == 5){
                         this.level.statusbars[2].current_img = 4;
                         full = true;
@@ -152,7 +154,7 @@ class World{
     collisionWithHeart(){
         let interval = setInterval(() => {
             this.level.items.hearts.forEach(heart =>{
-                if(this.character.isColliding(heart)){
+                if(this.character.sharkieIsColliding(heart)){
                     if(this.level.statusbars[0].current_img < 5){
                     heart.y = -50
                     this.level.statusbars[0].current_img ++;
@@ -167,7 +169,7 @@ class World{
         let full = false;
         let interval = setInterval(() => {
             this.level.items.poisons.forEach(poison =>{
-                if(this.character.isColliding(poison)){
+                if(this.character.sharkieIsColliding(poison)){
                     if(this.level.statusbars[1].current_img == 5){
                         full = true;
                     }
@@ -184,6 +186,21 @@ class World{
             })
         }, 200);
     }
+
+    bubbleCollisionWithEnemies(){
+        let interval = setInterval(() => {
+            this.throwable_objects.forEach(bubble =>{
+                this.level.enemies.forEach(enemy =>{
+                    if(bubble.isColliding(enemy)){
+                        enemy.y = -100;
+                        bubble.y = -100;
+                    }
+                })
+            })
+        }, 200);
+    }
+
+    
     
     editPoisonbar(){
         let empty = false;
@@ -203,6 +220,16 @@ class World{
                             this.throwable_objects.push(new ThrowableObject(this.character.x,this.character.y))
                         }, 600);
                     }
+                }
+            }
+        }, 100);
+    }
+
+    slapEnemies(){
+        setInterval(() => {
+            if(this.keyboard.SPACE){
+                if(!this.character.isSlapping()){
+                    this.character.slap();
                 }
             }
         }, 100);
