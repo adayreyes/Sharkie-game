@@ -4,7 +4,7 @@ class Level{
     items;
     background_objects;
     statusbars;
-    constructor(enemies,endboss,items,background_objects,statusbars){
+    constructor(enemies,endboss,items,background_objects,statusbars,throwable_objects){
         this.enemies = enemies;
         this.endboss = endboss;
         this.items = items;

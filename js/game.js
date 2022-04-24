@@ -42,7 +42,9 @@ function keyDown(event){
             break
         case 32:
             keyboard.SPACE = true;
-            world.character.attack();
+            break
+            case 70:
+                keyboard.F = true;
             break
     }
 }
@@ -69,6 +71,9 @@ function keyUp(event){
             break
         case 32:
             keyboard.SPACE = false;
+            break
+        case 70:
+            keyboard.F = false;
             break
     }
 }

@@ -37,7 +37,8 @@ class World{
      * @type {number}
      */
     camera_x = 0;
-    
+    throwable_objects = [];
+    poison_bottles = [];
    
     /**
      * Set the values of {@link World#canvas} and {@link World#keyboard}.
@@ -51,6 +52,7 @@ class World{
         this.draw();
         this.setWorld();
         this.checkCollisions();
+        this.throwBubbles();
         
     }
 
@@ -73,6 +75,7 @@ class World{
         this.addObjectsToMap(this.level.items.poisons);
         this.addObjectsToMap(this.level.items.hearts);
         this.addObjectsToMap(this.level.statusbars);
+        this.addObjectsToMap(this.throwable_objects);
         this.addToMap(this.level.endboss);
         this.addToMap(this.character);
         this.ctx.translate(-this.camera_x,0);
@@ -166,17 +169,43 @@ class World{
             this.level.items.poisons.forEach(poison =>{
                 if(this.character.isColliding(poison)){
                     if(this.level.statusbars[1].current_img == 5){
-                        this.level.statusbars[1].current_img = 4
                         full = true;
+                    }
+                    if(this.level.statusbars[1].current_img < 5){
+                        full = false;
                     }
                     if(!full){
                         poison.y = -100
                         this.level.statusbars[1].current_img ++;
                         this.level.statusbars[1].img = this.level.statusbars[1].image_cache[this.level.statusbars[1].IMAGES[this.level.statusbars[1].current_img]];
+                        this.poison_bottles.push("bottle");
                     }
                 }
             })
         }, 200);
+    }
+    
+    editPoisonbar(){
+        let empty = false;
+        this.level.statusbars[1].current_img --;
+        this.level.statusbars[1].img = this.level.statusbars[1].image_cache[this.level.statusbars[1].IMAGES[this.level.statusbars[1].current_img]];
+    }
+
+    throwBubbles(){
+        setInterval(() => {
+            if(this.keyboard.F){
+                if(!this.character.isAttacking()){
+                    this.character.attack();
+                    if(this.poison_bottles.length != 0){
+                        this.poison_bottles.pop();
+                        this.editPoisonbar();
+                        setTimeout(() => {
+                            this.throwable_objects.push(new ThrowableObject(this.character.x,this.character.y))
+                        }, 600);
+                    }
+                }
+            }
+        }, 100);
     }
 
     /**
