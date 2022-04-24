@@ -69,6 +69,17 @@ class World{
     draw(){
         this.ctx.clearRect(0,0, this.canvas.width,this.canvas.height);
         this.ctx.translate(this.camera_x,0);
+        this.addGroupsOfObjectsToMap();
+        this.addToMap(this.level.endboss);
+        this.addToMap(this.character);
+        this.ctx.translate(-this.camera_x,0);
+        let self = this;
+        requestAnimationFrame(function() {
+            self.draw()
+        })
+    }
+
+    addGroupsOfObjectsToMap(){
         this.addObjectsToMap(this.level.background_objects);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.items.coins);
@@ -76,16 +87,12 @@ class World{
         this.addObjectsToMap(this.level.items.hearts);
         this.addObjectsToMap(this.level.statusbars);
         this.addObjectsToMap(this.throwable_objects);
-        this.addToMap(this.level.endboss);
-        this.addToMap(this.character);
-        this.ctx.translate(-this.camera_x,0);
-        
-        let self = this;
-        requestAnimationFrame(function() {
-            self.draw()
-        })
     }
-
+    
+    health_empty = false;
+    coins_full = false;
+    poisons_full = false;
+    poisons_empty = false;
     /**
      * Check if the hitbox from each {@link Enemy} is colliding with the hitbox from the {@link Character}
      */
@@ -114,42 +121,48 @@ class World{
     }
     
     editHealthbar(){
-        let empty = false;
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy => {
                 if(this.character.sharkieIsColliding(enemy)){
-                    if(this.level.statusbars[0].current_img <= 0){
-                        this.level.statusbars[0].current_img = 0;
-                        empty = true;
-                        this.character.dead = true;
-                    }
-                    if(!empty){
-                        this.level.statusbars[0].current_img --;
-                        this.level.statusbars[0].img = this.level.statusbars[0].image_cache[this.level.statusbars[0].IMAGES[this.level.statusbars[0].current_img]];
-                    }  
+                    this.checkHealth();  
               }
             })
         }, 500);
+    }
+    
+    checkHealth(){
+        if(this.level.statusbars[0].current_img <= 0){
+            this.level.statusbars[0].current_img = 0;
+            this.health_empty = true;
+            this.character.dead = true;
+        }
+        if(!this.health_empty){
+            this.level.statusbars[0].current_img --;
+            this.level.statusbars[0].img = this.level.statusbars[0].image_cache[this.level.statusbars[0].IMAGES[this.level.statusbars[0].current_img]];
+        } 
      }
     
     
     collisionWithCoin(){
-        let full = false;
         let interval = setInterval(() => {
             this.level.items.coins.forEach(coin =>{
                 if(this.character.sharkieIsColliding(coin)){
-                    if(this.level.statusbars[2].current_img == 5){
-                        this.level.statusbars[2].current_img = 4;
-                        full = true;
-                    }
-                    if(!full){
-                        coin.y = -50
-                        this.level.statusbars[2].current_img ++;
-                        this.level.statusbars[2].img = this.level.statusbars[2].image_cache[this.level.statusbars[2].IMAGES[this.level.statusbars[2].current_img]];
-                    }
+                   this.checkCoins(coin);
                 }
             })
         }, 200);
+    }
+
+    checkCoins(coin){
+        if(this.level.statusbars[2].current_img == 5){
+            this.level.statusbars[2].current_img = 4;
+            this.coins_full = true;
+        }
+        if(!this.coins_full){
+            coin.y = -50
+            this.level.statusbars[2].current_img ++;
+            this.level.statusbars[2].img = this.level.statusbars[2].image_cache[this.level.statusbars[2].IMAGES[this.level.statusbars[2].current_img]];
+        }
     }
     collisionWithHeart(){
         let interval = setInterval(() => {
@@ -160,31 +173,34 @@ class World{
                     this.level.statusbars[0].current_img ++;
                     this.level.statusbars[0].img = this.level.statusbars[0].image_cache[this.level.statusbars[0].IMAGES[this.level.statusbars[0].current_img]];
                     }
-
                 }
             })
         }, 200);
     }
+
     collisionWithPoison(){
-        let full = false;
         let interval = setInterval(() => {
             this.level.items.poisons.forEach(poison =>{
                 if(this.character.sharkieIsColliding(poison)){
-                    if(this.level.statusbars[1].current_img == 5){
-                        full = true;
-                    }
-                    if(this.level.statusbars[1].current_img < 5){
-                        full = false;
-                    }
-                    if(!full){
-                        poison.y = -100
-                        this.level.statusbars[1].current_img ++;
-                        this.level.statusbars[1].img = this.level.statusbars[1].image_cache[this.level.statusbars[1].IMAGES[this.level.statusbars[1].current_img]];
-                        this.poison_bottles.push("bottle");
-                    }
+                    this.checkPoisons(poison);
                 }
             })
         }, 200);
+    }
+
+    checkPoisons(poison){
+        if(this.level.statusbars[1].current_img == 5){
+            this.poisons_full = true;
+        }
+        if(this.level.statusbars[1].current_img < 5){
+            this.poisons_full = false;
+        }
+        if(!this.poisons_full){
+            poison.y = -100
+            this.level.statusbars[1].current_img ++;
+            this.level.statusbars[1].img = this.level.statusbars[1].image_cache[this.level.statusbars[1].IMAGES[this.level.statusbars[1].current_img]];
+            this.poison_bottles.push("bottle");
+        }
     }
 
     bubbleCollisionWithEnemies(){
@@ -197,13 +213,11 @@ class World{
                     }
                 })
             })
-        }, 200);
+        }, 50);
     }
 
     
-    
     editPoisonbar(){
-        let empty = false;
         this.level.statusbars[1].current_img --;
         this.level.statusbars[1].img = this.level.statusbars[1].image_cache[this.level.statusbars[1].IMAGES[this.level.statusbars[1].current_img]];
     }
@@ -213,16 +227,20 @@ class World{
             if(this.keyboard.F){
                 if(!this.character.isAttacking()){
                     this.character.attack();
-                    if(this.poison_bottles.length != 0){
-                        this.poison_bottles.pop();
-                        this.editPoisonbar();
-                        setTimeout(() => {
-                            this.throwable_objects.push(new ThrowableObject(this.character.x,this.character.y))
-                        }, 600);
-                    }
+                    this.setNewBubble();
                 }
             }
         }, 100);
+    }
+
+    setNewBubble(){
+        if(this.poison_bottles.length != 0){
+            this.poison_bottles.pop();
+            this.editPoisonbar();
+            setTimeout(() => {
+                this.throwable_objects.push(new ThrowableObject(this.character.x,this.character.y))
+            }, 600);
+        }
     }
 
     slapEnemies(){
@@ -265,8 +283,7 @@ class World{
         }
         if(mo.other_direction){
            this.flipImageBack(mo);
-        }
-       
+        } 
     }
 
     /**

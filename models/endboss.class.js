@@ -70,23 +70,32 @@ class Endboss extends MovableObject{
     /**
      * Draw the default-images every 150ms
      */
+    current_img = 0;
     animateMovement(){
-        let i = 0;
         setTimeout(() => {
-            setInterval(()=>{
-                if(world.character.x > 3550){
-                    this.hadFirstContact = true;
-                }
-                if(this.hadFirstContact && i < 10){
-                    this.drawImages(this.IMAGES_APPEARING);
-                    i++
-                }
-                if(this.hadFirstContact && i == 10){
-                    this.drawImages(this.IMAGES_STAYING);
-                }
-            },150)
-            
+            setInterval(() => {
+                this.checkFirstContact();
+                this.endbossAppears();
+                this.endbossFloating();
+            }, 150);
         }, 1000);
+    }
+
+    checkFirstContact(){
+        if(world.character.x > 3550){
+            this.hadFirstContact = true;
+        }
+    }
+    endbossAppears(){
+        if(this.hadFirstContact && this.current_img < 10){
+            this.drawImages(this.IMAGES_APPEARING);
+            this.current_img++
+        }
+    }
+    endbossFloating(){
+        if(this.hadFirstContact && this.current_img >= 10){
+            this.drawImages(this.IMAGES_STAYING);
+        }
     }
 
 }

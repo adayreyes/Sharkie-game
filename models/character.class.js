@@ -132,92 +132,111 @@ class Character extends MovableObject{
      */
     moveCharacter(){
         let interval = setInterval(()=>{
-            
-            if(this.world.keyboard.RIGHT && this.x < 4300){
-                this.other_direction = false;
-                this.x += this.speed;
-                this.world.level.statusbars.forEach(element => {
-                    element.x += this.speed
-                });
-                /* this.swimming_sound.play(); */
-            }
-            if(this.world.keyboard.LEFT && this.x > -700){
-                this.other_direction = true;
-                this.x -= this.speed;
-                this.world.level.statusbars.forEach(element => {
-                    element.x -= this.speed
-                });
-                /* this.swimming_sound.play(); */
- 
-            }
-            if(this.world.keyboard.UP && this.y > -140){
-                this.y -= this.speed;
-                /* this.swimming_sound.play(); */
- 
-            }
-            if(this.world.keyboard.DOWN && this.y < 250){
-                this.y += this.speed;
-                /* this.swimming_sound.play(); */
- 
-            }
+            this.moveAnimationRight();
+            this.moveAnimationLeft();
+            this.moveAnimationUp();
+            this.moveAnimationDown(); 
             this.world.camera_x = -this.x;
         }, 1000/60)
+    }
+
+    moveAnimationRight(){
+        if(this.world.keyboard.RIGHT && this.x < 4300){
+            this.other_direction = false;
+            this.x += this.speed;
+            this.world.level.statusbars.forEach(element => {
+                element.x += this.speed
+            });
+            /* this.swimming_sound.play(); */
+        }
+    }
+    
+    moveAnimationLeft(){
+        if(this.world.keyboard.LEFT && this.x > -700){
+            this.other_direction = true;
+            this.x -= this.speed;
+            this.world.level.statusbars.forEach(element => {
+                element.x -= this.speed
+            });
+            /* this.swimming_sound.play(); */
+
+        }
+    }
+
+    moveAnimationUp(){
+        if(this.world.keyboard.UP && this.y > -140){
+            this.y -= this.speed;
+            /* this.swimming_sound.play(); */
+        }
+    }
+
+    moveAnimationDown(){
+        if(this.world.keyboard.DOWN && this.y < 250){
+            this.y += this.speed;
+            /* this.swimming_sound.play(); */
+        }
     }
 
      /**
      * Check if Sharkie is moving, hurt or dead and draw the respective images.
      */
     animateMovement(){
-        let stay_interval = setInterval(() => {
-            if(!this.isMoving && !this.dead && !this.isAttacking() && !this.isHurt() && !this.isElectrocuted() && !this.isSlapping()){
-                this.drawImages(this.IMAGES_STAYING)
-            }
+        setInterval(() => {
+            this.hurtAnimation();
+            this.stayAnimation();
+            this.deadAnimation(); 
         }, 150);
-        let hurt_interval = setInterval(() => {
-            if(this.isHurt()){
-               this.drawImages(this.IMAGES_HURT); 
-            }
-            else if(this.isElectrocuted()){
-                this.drawImages(this.IMAGES_SHOCK);
-               
-            }
-        }, 150);
-    
-        let move_interval = setInterval(() => {
-            if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN){
-                if(!this.isHurt() && !this.isElectrocuted()){
-                    this.drawImages(this.IMAGES_SWIMMING);
-                    this.isMoving = true;
-                }
-            } else{
-                this.isMoving = false;
-            }
-        }, 200);
-        
-        
-        let attack_interval = setInterval(() => {
-            if(this.isAttacking()){
-                this.drawAttackImages(this.IMAGES_ATTACK);
-            } else if(this.isSlapping()){
-                this.drawAttackImages(this.IMAGES_SLAPPING);
-            } else{
-                this.current_attack_img = 0;
 
+        setInterval(() => {
+            this.moveAnimation();
+            this.attackAnimation();
+        }, 100); 
+        
+    }
+
+    moveAnimation(){
+        if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN){
+            if(!this.isHurt() && !this.isElectrocuted()){
+                this.drawImages(this.IMAGES_SWIMMING);
+                this.isMoving = true;
             }
-        }, 100);
-        let dead_interval = setInterval(() => {
-            if(this.dead == true){
-                    this.drawImages(this.IMAGES_DEAD);
-                    setTimeout(() => {
-                        clearInterval(move_interval);
-                        clearInterval(dead_interval);
-                        clearInterval(hurt_interval);
-                        this.loadImage("img/1.Sharkie/6.dead/1.Poisoned/12.png")
-                    }, 1000);
-                }
-        }, 150);
-        
-        
+        } else{
+            this.isMoving = false;
+        }
+    }
+
+    attackAnimation(){
+        if(this.isAttacking()){
+            this.drawAttackImages(this.IMAGES_ATTACK);
+        } else if(this.isSlapping()){
+            this.drawAttackImages(this.IMAGES_SLAPPING);
+        } else{
+            this.current_attack_img = 0;
+
+        }
+    }
+
+    hurtAnimation(){
+        if(this.isHurt()){
+            this.drawImages(this.IMAGES_HURT); 
+         }
+         else if(this.isElectrocuted()){
+             this.drawImages(this.IMAGES_SHOCK);
+            
+         }
+    }
+    stayAnimation(){
+        if(!this.isMoving && !this.dead && !this.isAttacking() && !this.isHurt() && !this.isElectrocuted() && !this.isSlapping()){
+            this.drawImages(this.IMAGES_STAYING)
+        }
+    }
+    deadAnimation(){
+        if(this.dead == true){
+            this.drawImages(this.IMAGES_DEAD);
+            setTimeout(() => {
+                this.loadImage("img/1.Sharkie/6.dead/1.Poisoned/12.png")
+            }, 1000);
+        }
     }
 }
 
