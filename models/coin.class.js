@@ -11,10 +11,11 @@ class Coin extends StaticObject{
         "img/4. Marcadores/1. Coins/1.png",
         "img/4. Marcadores/1. Coins/2.png",
         "img/4. Marcadores/1. Coins/3.png",
-        "img/4. Marcadores/1. Coins/4.png",
+        "img/4. Marcadores/1. Coins/4.png"
     ]
     constructor(){
-        super().loadImages(this.IMAGES);
+        super().loadImage(this.IMAGES[0]);
+        this.loadImages(this.IMAGES);
         this.animate();
     }
     animate(){

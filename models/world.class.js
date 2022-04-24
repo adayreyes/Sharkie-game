@@ -109,10 +109,10 @@ class World{
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy =>{
                 if(this.character.sharkieIsColliding(enemy)){
-                    if(enemy instanceof PufferFish){
+                    if(enemy instanceof PufferFish && !enemy.dead){
                         this.character.hit();
                     }
-                    if(enemy instanceof JellyFish){
+                    if(enemy instanceof JellyFish && !enemy.dead){
                         this.character.shock();
                     }
                 }
@@ -208,8 +208,15 @@ class World{
             this.throwable_objects.forEach(bubble =>{
                 this.level.enemies.forEach(enemy =>{
                     if(bubble.isColliding(enemy)){
-                        enemy.y = -100;
                         bubble.y = -100;
+                        setInterval(() => {
+                            enemy.drawImages(enemy.IMG_DEAD);
+                            enemy.dead = true;
+                            if(enemy.y > -200){
+                                enemy.y -= 20;
+                                enemy.x -= 50;
+                            }
+                        }, 50);
                     }
                 })
             })
@@ -238,7 +245,11 @@ class World{
             this.poison_bottles.pop();
             this.editPoisonbar();
             setTimeout(() => {
-                this.throwable_objects.push(new ThrowableObject(this.character.x,this.character.y))
+                if(this.character.other_direction){
+                    this.throwable_objects.push(new ThrowableObject(this.character.x - 250,this.character.y,true))
+                } else{
+                    this.throwable_objects.push(new ThrowableObject(this.character.x,this.character.y,false))
+                }
             }, 600);
         }
     }
@@ -248,9 +259,27 @@ class World{
             if(this.keyboard.SPACE){
                 if(!this.character.isSlapping()){
                     this.character.slap();
+                    this.checkSlapCollision();
                 }
             }
         }, 100);
+    }
+
+    checkSlapCollision(){
+        this.level.enemies.forEach(enemy =>{
+            if(this.character.sharkieIsInRange(enemy)){
+               setTimeout(() => {
+                setInterval(() => {
+                    enemy.drawImages(enemy.IMG_DEAD);
+                    enemy.dead = true;
+                    if(enemy.y > -200){
+                        enemy.y -= 20;
+                        enemy.x -= 50;
+                    }
+                }, 50);
+               }, 500);
+            }
+        })
     }
 
     /**
@@ -272,7 +301,7 @@ class World{
            this.flipImage(mo);
         } 
         mo.draw(this.ctx);
-        if(mo instanceof Character){
+       /*  if(mo instanceof Character){
             mo.drawSharkieFrame(this.ctx);
         }
         if(mo instanceof Enemy){
@@ -280,7 +309,7 @@ class World{
         }
         if (mo instanceof Endboss){
             mo.drawEndbossFrame(this.ctx)
-        }
+        } */
         if(mo.other_direction){
            this.flipImageBack(mo);
         } 

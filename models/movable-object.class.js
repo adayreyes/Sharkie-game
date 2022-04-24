@@ -75,6 +75,8 @@ class MovableObject{
      */
     dead = false;
     current_attack_img = 0;
+    IMG_DEAD = [];
+    stop = false;
     
 
 
@@ -158,7 +160,12 @@ class MovableObject{
      * @param {CanvasRenderingContext2D} ctx - Canvas Context
      */
     draw(ctx){
-        ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
+        try{
+            ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
+        } catch(e){
+            console.warn("error loading image",e);
+            console.log("could not load image", this.img.src);
+        }
     }
 
     /**

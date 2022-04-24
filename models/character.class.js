@@ -126,6 +126,10 @@ class Character extends MovableObject{
      sharkieIsColliding(mo){
         return this.x+70 + this.width-150 > mo.x && this.y+160 + this.height-250 > mo.y && this.x+70 < mo.x && this.y+160 < mo.y + mo.height 
     }
+    
+    sharkieIsInRange(mo){
+        return this.x + this.width > mo.x && this.y+160 + this.height-250 > mo.y && this.x < mo.x && this.y+160 < mo.y + mo.height
+    }
 
     /**
      * Move Sharkie around the map and plays {@link Character#swimming_sound}
@@ -182,16 +186,19 @@ class Character extends MovableObject{
      */
     animateMovement(){
         setInterval(() => {
-            this.hurtAnimation();
-            this.stayAnimation();
-            this.deadAnimation(); 
+            if(!this.dead){
+                this.hurtAnimation();
+                this.stayAnimation();
+            } else{
+                this.deadAnimation();  
+            }
         }, 150);
-
         setInterval(() => {
-            this.moveAnimation();
-            this.attackAnimation();
+            if(!this.dead){
+                this.moveAnimation();
+                this.attackAnimation();
+            }
         }, 100); 
-        
     }
 
     moveAnimation(){
@@ -217,10 +224,10 @@ class Character extends MovableObject{
     }
 
     hurtAnimation(){
-        if(this.isHurt()){
+        if(this.isHurt() && !this.isSlapping()){
             this.drawImages(this.IMAGES_HURT); 
          }
-         else if(this.isElectrocuted()){
+         else if(this.isElectrocuted() && !this.isSlapping()){
              this.drawImages(this.IMAGES_SHOCK);
             
          }
@@ -231,12 +238,13 @@ class Character extends MovableObject{
         }
     }
     deadAnimation(){
-        if(this.dead == true){
-            this.drawImages(this.IMAGES_DEAD);
+            if(!this.stop){
+                this.drawImages(this.IMAGES_DEAD);
+            }
             setTimeout(() => {
+                this.stop = true;
                 this.loadImage("img/1.Sharkie/6.dead/1.Poisoned/12.png")
             }, 1000);
-        }
     }
 }
 

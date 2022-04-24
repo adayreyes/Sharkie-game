@@ -80,7 +80,12 @@ class StaticObject{
      * @param {CanvasRenderingContext2D} ctx - Canvas Context
      */
     draw(ctx){
-        ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
+        try{
+            ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
+        } catch(e){
+            console.warn("error loading image",e);
+            console.log("could not load image", this.img);
+        }
     }
     /**
      * Change {@link StaticObject#img} to the next img of the array.

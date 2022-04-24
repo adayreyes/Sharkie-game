@@ -18,7 +18,8 @@ class Poison extends StaticObject{
         "img/4. Marcadores/Posión/Animada/8.png",
     ]
     constructor(){
-        super().loadImages(this.IMAGES);
+        super().loadImage(this.IMAGES[0]);
+        this.loadImages(this.IMAGES);
         this.animate();
     }
     animate(){
