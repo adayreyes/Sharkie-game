@@ -9,9 +9,6 @@ class Statusbar extends StaticObject {
     width = 200;
     height = 50;
     x = -40;
-    speed = 10;
     world;
-    
-
     
 }

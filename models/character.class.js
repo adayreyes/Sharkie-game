@@ -6,7 +6,7 @@ class Character extends MovableObject{
     x = -40;
     y = 60;
     width = 300;
-    speed = 3;
+    speed = 5;
     height = 300;
     world;
     IMAGES_SWIMMING = ["img/1.Sharkie/3.Swim/1.png",
@@ -70,7 +70,7 @@ class Character extends MovableObject{
         "img/1.Sharkie/5.Hurt/2.Electric shock/3.png"
     ]
     IMAGES_ATTACK = [
-        "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/8.png",
+        "img/1.Sharkie/4.Attack/Fin slap/1.png",
         "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/1.png",
         "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/2.png",
         "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/3.png",

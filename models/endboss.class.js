@@ -39,8 +39,11 @@ class Endboss extends MovableObject{
         "img/2.Enemy/3 Final Enemy/2.floating/11.png",
         "img/2.Enemy/3 Final Enemy/2.floating/12.png",
         "img/2.Enemy/3 Final Enemy/2.floating/13.png",
-    ]
+    ];
+
+    IMAGES_HEALTHBAR = ["img/4. Marcadores/orange/health0.png","img/4. Marcadores/orange/health20.png","img/4. Marcadores/orange/health40.png","img/4. Marcadores/orange/health60.png","img/4. Marcadores/orange/health80.png","img/4. Marcadores/orange/health100.png",]
     hadFirstContact = false;
+
     constructor(){
         super().loadImage("img/2.Enemy/3 Final Enemy/1.Introduce/1.png");
         this.loadImages(this.IMAGES_STAYING);
@@ -84,6 +87,8 @@ class Endboss extends MovableObject{
     checkFirstContact(){
         if(world.character.x > 3550){
             this.hadFirstContact = true;
+            world.level.statusbars[4].y = -30;
+            world.level.statusbars[3].y = 30;
         }
     }
     endbossAppears(){
