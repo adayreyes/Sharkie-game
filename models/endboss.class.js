@@ -41,6 +41,13 @@ class Endboss extends MovableObject{
         "img/2.Enemy/3 Final Enemy/2.floating/13.png",
     ];
 
+    IMAGES_HURT = [
+        "img/2.Enemy/3 Final Enemy/Hurt/1.png",
+        "img/2.Enemy/3 Final Enemy/Hurt/2.png",
+        "img/2.Enemy/3 Final Enemy/Hurt/3.png",
+        "img/2.Enemy/3 Final Enemy/Hurt/4.png"
+    ]
+
     IMAGES_HEALTHBAR = ["img/4. Marcadores/orange/health0.png","img/4. Marcadores/orange/health20.png","img/4. Marcadores/orange/health40.png","img/4. Marcadores/orange/health60.png","img/4. Marcadores/orange/health80.png","img/4. Marcadores/orange/health100.png",]
     hadFirstContact = false;
 
@@ -48,6 +55,7 @@ class Endboss extends MovableObject{
         super().loadImage("img/2.Enemy/3 Final Enemy/1.Introduce/1.png");
         this.loadImages(this.IMAGES_STAYING);
         this.loadImages(this.IMAGES_APPEARING);
+        this.loadImages(this.IMAGES_HURT);
         this.animate();
 
     };
@@ -80,8 +88,16 @@ class Endboss extends MovableObject{
                 this.checkFirstContact();
                 this.endbossAppears();
                 this.endbossFloating();
+                this.hurtAnimation();
             }, 150);
         }, 1000);
+    }
+
+
+    hurtAnimation(){
+        if(this.isHurt()){
+            this.drawImages(this.IMAGES_HURT); 
+         }
     }
 
     checkFirstContact(){
@@ -98,7 +114,7 @@ class Endboss extends MovableObject{
         }
     }
     endbossFloating(){
-        if(this.hadFirstContact && this.current_img >= 10){
+        if(this.hadFirstContact && this.current_img >= 10 && !this.isHurt()){
             this.drawImages(this.IMAGES_STAYING);
         }
     }

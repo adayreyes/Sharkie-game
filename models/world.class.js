@@ -103,6 +103,7 @@ class World{
         this.collisionWithPoison();
         this.collisionWithHeart();
         this.bubbleCollisionWithEnemies();
+        this.bubbleCollisionWithEndboss();
         this.slapEnemies();
     }
     collisionWithEnemy(){
@@ -220,6 +221,17 @@ class World{
                     }
                 })
             })
+        }, 50);
+    }
+    
+    bubbleCollisionWithEndboss(){
+        let interval = setInterval(() => {
+            this.throwable_objects.forEach(bubble => {
+                if(bubble.isColliding(this.level.endboss)){
+                    bubble.y = -100;
+                    this.level.endboss.hit();
+                }
+            });
         }, 50);
     }
 
