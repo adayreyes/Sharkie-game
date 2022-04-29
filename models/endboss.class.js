@@ -48,6 +48,14 @@ class Endboss extends MovableObject{
         "img/2.Enemy/3 Final Enemy/Hurt/4.png"
     ]
 
+    IMAGES_DEAD = [
+        "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 6.png",
+        "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 7.png",
+        "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 8.png",
+        "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 9.png",
+        "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 10.png"
+    ]
+
     IMAGES_HEALTHBAR = ["img/4. Marcadores/orange/health0.png","img/4. Marcadores/orange/health20.png","img/4. Marcadores/orange/health40.png","img/4. Marcadores/orange/health60.png","img/4. Marcadores/orange/health80.png","img/4. Marcadores/orange/health100.png",]
     hadFirstContact = false;
 
@@ -57,6 +65,7 @@ class Endboss extends MovableObject{
         this.loadImages(this.IMAGES_APPEARING);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_HEALTHBAR);
+        this.loadImages(this.IMAGES_DEAD);
         this.animate();
 
     };
@@ -83,14 +92,19 @@ class Endboss extends MovableObject{
      * Draw the default-images every 150ms
      */
     current_img = 0;
+    
     animateMovement(){
         setTimeout(() => {
             setInterval(() => {
-                this.checkFirstContact();
-                this.endbossAppears();
-                this.endbossFloating();
-                this.hurtAnimation();
-            }, 150);
+                if(!this.dead){
+                    this.checkFirstContact();
+                    this.endbossAppears();
+                    this.endbossFloating();
+                    this.hurtAnimation();
+                } else{
+                    this.deadAnimation();
+                }
+            }, 200);
         }, 1000);
     }
 
@@ -99,6 +113,16 @@ class Endboss extends MovableObject{
         if(this.isHurt()){
             this.drawImages(this.IMAGES_HURT); 
          }
+    }
+
+    deadAnimation(){
+        if(!this.stop){
+            this.drawImages(this.IMAGES_DEAD);
+        }
+        setTimeout(() => {
+            this.stop = true;
+            this.loadImage("img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 10.png")
+        }, 800);
     }
 
     checkFirstContact(){
