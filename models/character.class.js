@@ -136,11 +136,13 @@ class Character extends MovableObject{
      */
     moveCharacter(){
         let interval = setInterval(()=>{
-            this.moveAnimationRight();
-            this.moveAnimationLeft();
-            this.moveAnimationUp();
-            this.moveAnimationDown(); 
-            this.world.camera_x = -this.x;
+            if(!this.dead){
+                this.moveAnimationRight();
+                this.moveAnimationLeft();
+                this.moveAnimationUp();
+                this.moveAnimationDown(); 
+                this.world.camera_x = -this.x;
+            }
         }, 1000/60)
     }
 

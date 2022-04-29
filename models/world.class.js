@@ -230,9 +230,17 @@ class World{
                 if(bubble.isColliding(this.level.endboss)){
                     bubble.y = -100;
                     this.level.endboss.hit();
+                    this.editEndbossbar();
                 }
             });
         }, 50);
+    }
+
+    editEndbossbar(){
+        if(this.level.statusbars[3].current_img > 0){
+            this.level.statusbars[3].current_img --;
+            this.level.statusbars[3].img = this.level.statusbars[3].image_cache[this.level.statusbars[3].IMAGES[this.level.statusbars[3].current_img]];
+        }
     }
 
     
