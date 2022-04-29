@@ -136,7 +136,7 @@ class Character extends MovableObject{
      */
     moveCharacter(){
         let interval = setInterval(()=>{
-            if(!this.dead){
+            if(!this.dead && !this.isSlapping()){
                 this.moveAnimationRight();
                 this.moveAnimationLeft();
                 this.moveAnimationUp();

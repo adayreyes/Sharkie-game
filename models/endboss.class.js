@@ -56,6 +56,15 @@ class Endboss extends MovableObject{
         "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 10.png"
     ]
 
+    IMAGES_ATTACKING = [
+        "img/2.Enemy/3 Final Enemy/Attack/1.png",
+        "img/2.Enemy/3 Final Enemy/Attack/2.png",
+        "img/2.Enemy/3 Final Enemy/Attack/3.png",
+        "img/2.Enemy/3 Final Enemy/Attack/4.png",
+        "img/2.Enemy/3 Final Enemy/Attack/5.png",
+        "img/2.Enemy/3 Final Enemy/Attack/6.png"
+    ]
+
     IMAGES_HEALTHBAR = ["img/4. Marcadores/orange/health0.png","img/4. Marcadores/orange/health20.png","img/4. Marcadores/orange/health40.png","img/4. Marcadores/orange/health60.png","img/4. Marcadores/orange/health80.png","img/4. Marcadores/orange/health100.png",]
     hadFirstContact = false;
 
@@ -66,6 +75,7 @@ class Endboss extends MovableObject{
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_HEALTHBAR);
         this.loadImages(this.IMAGES_DEAD);
+        this.loadImages(this.IMAGES_ATTACKING);
         this.animate();
 
     };
@@ -92,7 +102,14 @@ class Endboss extends MovableObject{
      * Draw the default-images every 150ms
      */
     current_img = 0;
+    startAttack = false;
     
+    EndbossIsAttacking(){
+        let timepassed = new Date().getTime() - this.last_attack;
+        timepassed = timepassed / 1000;
+        return timepassed < .1;
+    }
+
     animateMovement(){
         setTimeout(() => {
             setInterval(() => {
@@ -101,13 +118,21 @@ class Endboss extends MovableObject{
                     this.endbossAppears();
                     this.endbossFloating();
                     this.hurtAnimation();
+                    this.attackAnimation();
                 } else{
                     this.deadAnimation();
                 }
-            }, 200);
+            }, 150);
         }, 1000);
     }
 
+    attackAnimation(){
+        if(this.startAttack && !this.isHurt() && this.x - world.character.x < 530){
+            this.attack();
+            this.drawImages(this.IMAGES_ATTACKING)
+            this.x -= 30;
+        }
+    }
 
     hurtAnimation(){
         if(this.isHurt()){
@@ -130,6 +155,9 @@ class Endboss extends MovableObject{
             this.hadFirstContact = true;
             world.level.statusbars[4].y = -30;
             world.level.statusbars[3].y = 30;
+            setTimeout(() => {
+                this.startAttack = true;
+            }, 2000);
         }
     }
     endbossAppears(){
@@ -139,8 +167,12 @@ class Endboss extends MovableObject{
         }
     }
     endbossFloating(){
-        if(this.hadFirstContact && this.current_img >= 10 && !this.isHurt()){
+        if(this.hadFirstContact && this.current_img >= 10 && !this.isHurt() && !this.EndbossIsAttacking()){
             this.drawImages(this.IMAGES_STAYING);
+            this.y = world.character.y - 50;
+            if(this.x - world.character.x > 550){
+                this.x = world.character.x + 550;
+            }
         }
     }
 

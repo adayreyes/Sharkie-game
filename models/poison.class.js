@@ -5,7 +5,7 @@
 class Poison extends StaticObject{
     width = 60;
     height = 80;
-    y = 400;
+    y = 400 - Math.random() * 400;
     x = 200 + Math.random() * 5000;
     IMAGES = [
         "img/4. Marcadores/Posión/Animada/1.png",
