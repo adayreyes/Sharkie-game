@@ -109,13 +109,13 @@ class World{
     collisionWithEnemy(){
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy =>{
-                if(this.character.sharkieIsColliding(enemy) && !this.character.isSlapping() || this.character.sharkieIsColliding(this.level.endboss)){
+                if(this.character.sharkieIsColliding(enemy) && !this.character.isSlapping() || this.character.sharkieIsCollidingWithEndboss(this.level.endboss)){
                     if(enemy instanceof PufferFish && !enemy.dead && !this.character.killed && !this.character.dead){
                         this.character.hit();
                     }
                     if(enemy instanceof JellyFish && !enemy.dead && !this.character.killed && !this.character.dead){
                         this.character.shock();
-                    } else if(this.character.sharkieIsColliding(this.level.endboss) && !this.character.killed && !this.character.dead){
+                    } else if(this.character.sharkieIsCollidingWithEndboss(this.level.endboss) && !this.character.killed && !this.character.dead){
                         this.character.kill();
                     }
                 }
@@ -130,7 +130,7 @@ class World{
                     this.checkHealth();  
                 }
             })
-            if(this.character.sharkieIsColliding(this.level.endboss)){
+            if(this.character.sharkieIsCollidingWithEndboss(this.level.endboss)){
                 this.checkHealth();  
                 this.checkHealth();  
                 this.checkHealth();  
@@ -231,6 +231,10 @@ class World{
                                 enemy.x -= 50;
                             }
                         }, 50);
+                    } else{
+                        setTimeout(() => {
+                            bubble.y = -100;
+                        }, 500);
                     }
                 })
             })
@@ -240,7 +244,7 @@ class World{
     bubbleCollisionWithEndboss(){
         let interval = setInterval(() => {
             this.throwable_objects.forEach(bubble => {
-                if(bubble.isColliding(this.level.endboss)){
+                if(bubble.isCollidingWithEndboss(this.level.endboss)){
                     bubble.y = -100;
                     this.level.endboss.hit();
                     this.editEndbossbar();
@@ -341,10 +345,10 @@ class World{
         }
         if(mo instanceof Enemy){
             mo.drawFrame(this.ctx)
-        }
+        }*/
         if (mo instanceof Endboss){
             mo.drawEndbossFrame(this.ctx)
-        } */
+        } 
         if(mo.other_direction){
            this.flipImageBack(mo);
         } 

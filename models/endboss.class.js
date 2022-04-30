@@ -96,7 +96,7 @@ class Endboss extends MovableObject{
         ctx.beginPath();
         ctx.lineWidth = "5";
         ctx.strokeStyle = "blue";
-        ctx.rect(this.x+30,this.y+180,this.width-100,this.height-250);
+        ctx.rect(this.x,this.y+180,this.width-100,this.height-250);
         ctx.stroke();
     }
     
@@ -129,10 +129,10 @@ class Endboss extends MovableObject{
     }
 
     attackAnimation(){
-        if(this.startAttack && !this.isHurt() && this.x - world.character.x < 300 && this.x - world.character.x > 50){
+        if(this.startAttack && !this.isHurt() && this.x - world.character.x < 400 && this.x - world.character.x > 50){
             this.attack();
             this.drawImages(this.IMAGES_ATTACKING)
-            this.x -= 20;
+            this.x -= 15;
         }
     }
 

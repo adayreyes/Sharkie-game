@@ -6,7 +6,7 @@ class Character extends MovableObject{
     x = -40;
     y = 60;
     width = 300;
-    speed = 5;
+    speed = 7;
     height = 300;
     world;
     IMAGES_SWIMMING = ["img/1.Sharkie/3.Swim/1.png",
@@ -131,9 +131,7 @@ class Character extends MovableObject{
      * @param {object} mo - {@link MovableObject}. 
      * @returns {boolean}
      */
-     sharkieIsColliding(mo){
-        return this.x+70 + this.width-150 > mo.x && this.y+160 + this.height-250 > mo.y && this.x+70 < mo.x && this.y+160 < mo.y + mo.height 
-    }
+     
     
     sharkieIsInRange(mo){
         return this.x + this.width > mo.x && this.y+160 + this.height-250 > mo.y && this.x < mo.x && this.y+160 < mo.y + mo.height
@@ -264,12 +262,12 @@ class Character extends MovableObject{
     killedAnimation(){
         if(!this.stop){
             this.drawImages(this.IMAGES_KILLED);
-            if(this.y < 150){
-                this.y += 30
-            }
-            if(this.y > 200){
-                this.y -= 30
-            }
+        }
+        if(this.y < 150){
+            this.y += 30
+        }
+        if(this.y > 200){
+            this.y -= 30
         }
         setTimeout(() => {
             this.stop = true;

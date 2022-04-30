@@ -110,12 +110,18 @@ class MovableObject{
     hit(){
         this.last_hit = new Date().getTime();
     }
+    sharkieIsColliding(mo){
+        return this.x+70 + this.width-150 > mo.x && this.y+160 + this.height-250 > mo.y && this.x+70 < mo.x && this.y+160 < mo.y + mo.height 
+    }
     isColliding(mo){
-        return this.x + this.width > mo.x && this.y + this.height > mo.y && this.x < mo.x && this.y < mo.y + mo.height 
+        return this.x + this.width > mo.x && this.y + this.height > mo.y && this.x < mo.x && this.y < mo.y + mo.height
     }
     
-    isCollidingWithEndboss(){
-        return this.x+60 + this.width-120 > mo.x && this.y+150 + this.height-230 > mo.y && this.x+60 < mo.x && this.y+150 < mo.y + mo.height
+    isCollidingWithEndboss(endboss){
+        return this.x + this.width > endboss.x + 30 && this.y + this.height > endboss.y + 180 && this.x < endboss.x + 30 && this.y < endboss.y + 180 + endboss.height -250
+    }
+    sharkieIsCollidingWithEndboss(endboss){
+        return this.x +70  + this.width - 150 > endboss.x  && this.y + 160 + this.height -250 > endboss.y + 180 && this.x + 70 < endboss.x && this.y + 160 < endboss.y + 180 + endboss.height -250
     }
     shock(){
         this.last_shock = new Date().getTime();
