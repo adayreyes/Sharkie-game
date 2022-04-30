@@ -92,7 +92,14 @@ class Character extends MovableObject{
         "img/1.Sharkie/4.Attack/Fin slap/7.png",
         "img/1.Sharkie/4.Attack/Fin slap/8.png"
     ]
+    IMAGES_KILLED = [
+        "img/1.Sharkie/6.dead/2.Electro_shock/7.png",
+        "img/1.Sharkie/6.dead/2.Electro_shock/8.png",
+        "img/1.Sharkie/6.dead/2.Electro_shock/9.png",
+        "img/1.Sharkie/6.dead/2.Electro_shock/10.png"
+    ]
     isMoving = false;
+    killed = false;
     /**
      * Audio that is played when Sharkie is swimming.
      * @type {Audio}
@@ -108,6 +115,7 @@ class Character extends MovableObject{
         this.loadImages(this.IMAGES_SHOCK);
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_SLAPPING);
+        this.loadImages(this.IMAGES_KILLED);
         this.animate();
     }
     
@@ -136,7 +144,7 @@ class Character extends MovableObject{
      */
     moveCharacter(){
         let interval = setInterval(()=>{
-            if(!this.dead && !this.isSlapping()){
+            if(!this.dead && !this.isSlapping() && !this.killed){
                 this.moveAnimationRight();
                 this.moveAnimationLeft();
                 this.moveAnimationUp();
@@ -188,15 +196,19 @@ class Character extends MovableObject{
      */
     animateMovement(){
         setInterval(() => {
-            if(!this.dead){
+            if(!this.dead && !this.killed){
                 this.hurtAnimation();
                 this.stayAnimation();
-            } else{
+            }
+            if(this.dead){
                 this.deadAnimation();  
             }
-        }, 150);
+            if(this.killed){
+                this.killedAnimation();
+            }
+        }, 200);
         setInterval(() => {
-            if(!this.dead){
+            if(!this.dead && !this.killed){
                 this.moveAnimation();
                 this.attackAnimation();
             }
@@ -235,7 +247,7 @@ class Character extends MovableObject{
          }
     }
     stayAnimation(){
-        if(!this.isMoving && !this.dead && !this.isAttacking() && !this.isHurt() && !this.isElectrocuted() && !this.isSlapping()){
+        if(!this.isMoving && !this.dead && !this.killed && !this.isAttacking() && !this.isHurt() && !this.isElectrocuted() && !this.isSlapping()){
             this.drawImages(this.IMAGES_STAYING)
         }
     }
@@ -247,6 +259,22 @@ class Character extends MovableObject{
                 this.stop = true;
                 this.loadImage("img/1.Sharkie/6.dead/1.Poisoned/12.png")
             }, 1000);
+    }
+
+    killedAnimation(){
+        if(!this.stop){
+            this.drawImages(this.IMAGES_KILLED);
+            if(this.y < 150){
+                this.y += 30
+            }
+            if(this.y > 200){
+                this.y -= 30
+            }
+        }
+        setTimeout(() => {
+            this.stop = true;
+            this.loadImage("img/1.Sharkie/6.dead/2.Electro_shock/10.png")
+        }, 500);
     }
 }
 

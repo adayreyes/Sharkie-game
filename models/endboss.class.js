@@ -65,6 +65,8 @@ class Endboss extends MovableObject{
         "img/2.Enemy/3 Final Enemy/Attack/6.png"
     ]
 
+    
+
     IMAGES_HEALTHBAR = ["img/4. Marcadores/orange/health0.png","img/4. Marcadores/orange/health20.png","img/4. Marcadores/orange/health40.png","img/4. Marcadores/orange/health60.png","img/4. Marcadores/orange/health80.png","img/4. Marcadores/orange/health100.png",]
     hadFirstContact = false;
 
@@ -127,10 +129,10 @@ class Endboss extends MovableObject{
     }
 
     attackAnimation(){
-        if(this.startAttack && !this.isHurt() && this.x - world.character.x < 530){
+        if(this.startAttack && !this.isHurt() && this.x - world.character.x < 300 && this.x - world.character.x > 50){
             this.attack();
             this.drawImages(this.IMAGES_ATTACKING)
-            this.x -= 30;
+            this.x -= 20;
         }
     }
 
@@ -169,7 +171,9 @@ class Endboss extends MovableObject{
     endbossFloating(){
         if(this.hadFirstContact && this.current_img >= 10 && !this.isHurt() && !this.EndbossIsAttacking()){
             this.drawImages(this.IMAGES_STAYING);
-            this.y = world.character.y - 50;
+            if(world.character.y > -100){
+                this.y = world.character.y - 100;
+            }
             if(this.x - world.character.x > 550){
                 this.x = world.character.x + 550;
             }

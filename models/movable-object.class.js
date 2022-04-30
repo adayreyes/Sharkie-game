@@ -128,6 +128,16 @@ class MovableObject{
         this.last_slap = new Date().getTime();
     }
 
+    kill(){
+        this.kill_attack = new Date().getTime();
+    }
+
+    isKilled(){
+        let timepassed = new Date().getTime() - this.kill_attack;
+        timepassed = timepassed / 1000;
+        return timepassed < 1
+    }
+
     /**
      * Check if {@link MovableObject#hit} was called in the last 1s  .
      * @returns {boolean} 

@@ -109,12 +109,14 @@ class World{
     collisionWithEnemy(){
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy =>{
-                if(this.character.sharkieIsColliding(enemy)){
-                    if(enemy instanceof PufferFish && !enemy.dead){
+                if(this.character.sharkieIsColliding(enemy) && !this.character.isSlapping() || this.character.sharkieIsColliding(this.level.endboss)){
+                    if(enemy instanceof PufferFish && !enemy.dead && !this.character.killed && !this.character.dead){
                         this.character.hit();
                     }
-                    if(enemy instanceof JellyFish && !enemy.dead){
+                    if(enemy instanceof JellyFish && !enemy.dead && !this.character.killed && !this.character.dead){
                         this.character.shock();
+                    } else if(this.character.sharkieIsColliding(this.level.endboss) && !this.character.killed && !this.character.dead){
+                        this.character.kill();
                     }
                 }
             })
@@ -124,10 +126,16 @@ class World{
     editHealthbar(){
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy => {
-                if(this.character.sharkieIsColliding(enemy)){
+                if(this.character.sharkieIsColliding(enemy) && !this.character.isSlapping()){
                     this.checkHealth();  
-              }
+                }
             })
+            if(this.character.sharkieIsColliding(this.level.endboss)){
+                this.checkHealth();  
+                this.checkHealth();  
+                this.checkHealth();  
+                 
+            }
         }, 500);
     }
     
@@ -135,7 +143,12 @@ class World{
         if(this.level.statusbars[0].current_img <= 0){
             this.level.statusbars[0].current_img = 0;
             this.health_empty = true;
-            this.character.dead = true;
+            if(this.character.isKilled()){
+                this.character.killed = true;
+            }
+            if(this.character.isHurt() && !this.character.killed || this.character.isElectrocuted() && !this.character.killed){
+                this.character.dead = true;
+            }
         }
         if(!this.health_empty){
             this.level.statusbars[0].current_img --;
