@@ -115,14 +115,18 @@ class Endboss extends MovableObject{
     animateMovement(){
         setTimeout(() => {
             setInterval(() => {
-                if(!this.dead){
-                    this.checkFirstContact();
-                    this.endbossAppears();
-                    this.endbossFloating();
-                    this.hurtAnimation();
-                    this.attackAnimation();
-                } else{
-                    this.deadAnimation();
+                try {
+                    if(!this.dead){
+                        this.checkFirstContact();
+                        this.endbossAppears();
+                        this.endbossFloating();
+                        this.hurtAnimation();
+                        this.attackAnimation();
+                    } else{
+                        this.deadAnimation();
+                    } 
+                } catch (error) {
+                    return
                 }
             }, 150);
         }, 1000);

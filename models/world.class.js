@@ -39,6 +39,8 @@ class World{
     camera_x = 0;
     throwable_objects = [];
     poison_bottles = [];
+    start = false;
+    stop = false;
    
     /**
      * Set the values of {@link World#canvas} and {@link World#keyboard}.
@@ -67,17 +69,23 @@ class World{
      * Draw all the objects in the canvas
      */
     draw(){
-        this.ctx.clearRect(0,0, this.canvas.width,this.canvas.height);
-        this.ctx.translate(this.camera_x,0);
-        this.addGroupsOfObjectsToMap();
-        this.addToMap(this.level.endboss);
-        this.addToMap(this.character);
-        this.ctx.translate(-this.camera_x,0);
         let self = this;
-        requestAnimationFrame(function() {
+        let req = requestAnimationFrame(function() {
             self.draw()
         })
+        if(this.start){
+            this.ctx.clearRect(0,0, this.canvas.width,this.canvas.height);
+            this.ctx.translate(this.camera_x,0);
+            this.addGroupsOfObjectsToMap();
+            this.addToMap(this.level.endboss);
+            this.addToMap(this.character);
+            this.ctx.translate(-this.camera_x,0);
+        }
+        if(this.stop){
+            cancelAnimationFrame(req);
+        }
     }
+    
 
     addGroupsOfObjectsToMap(){
         this.addObjectsToMap(this.level.background_objects);

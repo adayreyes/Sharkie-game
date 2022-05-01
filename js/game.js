@@ -8,9 +8,17 @@ let keyboard = new Keyboard;
 function init(){
     canvas = getById("canvas");
     world = new World(canvas,keyboard);
-    console.log(world);
     checkIfKeyIsPressed(); 
 }
+
+function start(){
+    world.start = true;
+}
+
+function stop(){
+    world.stop = true;
+}
+
 
 /**
  * check if a key is pressed
