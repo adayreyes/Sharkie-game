@@ -6,7 +6,7 @@ class Character extends MovableObject{
     x = -40;
     y = 60;
     width = 300;
-    speed = 7;
+    speed = 4;
     height = 300;
     world;
     IMAGES_SWIMMING = ["img/1.Sharkie/3.Swim/1.png",

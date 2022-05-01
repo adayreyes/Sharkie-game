@@ -272,7 +272,7 @@ class World{
 
     throwBubbles(){
         setInterval(() => {
-            if(this.keyboard.F){
+            if(this.keyboard.D){
                 if(!this.character.isAttacking()){
                     this.character.attack();
                     this.setNewBubble();
@@ -347,10 +347,10 @@ class World{
         }
         if(mo instanceof Enemy){
             mo.drawFrame(this.ctx)
-        }*/
+        }
         if (mo instanceof Endboss){
             mo.drawEndbossFrame(this.ctx)
-        } 
+        } */
         if(mo.other_direction){
            this.flipImageBack(mo);
         } 

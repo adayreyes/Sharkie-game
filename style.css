@@ -4,8 +4,49 @@ body{
     align-items: center;
     justify-content: center;
     height: 80vh;
+    background-color: rgb(5, 105, 255);
 }
 
 canvas{
     background-color: black;
+}
+
+.explication{
+    display: flex;
+    flex-direction:column;
+    width: 720px;
+    
+}
+
+.movement-bottons-container img:first-child, .attack-bottons-container img:first-child{
+    width: 200px;
+}
+
+.movement-bottons-container img:nth-child(2){
+    width: 200px;
+}
+
+.attack-bottons-container img:nth-child(2){
+    width: 300px;
+}
+.attack-bottons-container img:nth-child(3){
+    width: 80px;
+}
+
+.attack-bottons-container, .movement-bottons-container{
+    display: flex;
+    width: 100%;
+    margin: 1rem auto;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 0 1rem;
+    
+}
+
+.attack-bottons-container{
+    justify-content: space-between;
+}
+.movement-bottons-container{
+    gap: 10rem;
+
 }

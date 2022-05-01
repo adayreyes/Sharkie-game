@@ -43,8 +43,8 @@ function keyDown(event){
         case 32:
             keyboard.SPACE = true;
             break
-            case 70:
-                keyboard.F = true;
+            case 68:
+                keyboard.D = true;
             break
     }
 }
@@ -72,8 +72,8 @@ function keyUp(event){
         case 32:
             keyboard.SPACE = false;
             break
-        case 70:
-            keyboard.F = false;
+        case 68:
+            keyboard.D = false;
             break
     }
 }
