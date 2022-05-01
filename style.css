@@ -4,6 +4,8 @@ body{
     align-items: center;
     justify-content: center;
     background-image: url("img/3. Background/Dark/1.png");
+    position: relative;
+    overflow: hidden;
     
 }
 h1{
@@ -19,31 +21,33 @@ h1{
 }
 canvas{
     background-color: black;
+    display: none;
 }
 
 .explication{
-    display: flex;
+    display: none;
     flex-direction:column;
     width: 720px;
     
+    
 }
 
-.movement-bottons-container img:first-child, .attack-bottons-container img:first-child{
+.movement-buttons-container img:first-child, .attack-buttons-container img:first-child{
     width: 200px;
 }
 
-.movement-bottons-container img:nth-child(2){
+.movement-buttons-container img:nth-child(2){
     width: 200px;
 }
 
-.attack-bottons-container img:nth-child(2){
+.attack-buttons-container img:nth-child(2){
     width: 300px;
 }
-.attack-bottons-container img:nth-child(3){
+.attack-buttons-container img:nth-child(3){
     width: 80px;
 }
 
-.attack-bottons-container, .movement-bottons-container{
+.attack-buttons-container, .movement-buttons-container{
     display: flex;
     width: 100%;
     margin: 1rem auto;
@@ -53,10 +57,21 @@ canvas{
     
 }
 
-.attack-bottons-container{
+.attack-buttons-container{
     justify-content: space-between;
 }
-.movement-bottons-container{
+.movement-buttons-container{
     gap: 10rem;
 
+}
+
+#start-button{
+    cursor: pointer;
+    transition: all 100ms ease-in-out;
+    position: absolute;
+    top: 50vh;
+}
+
+#start-button:hover{
+    transform: scale(1.05);
 }

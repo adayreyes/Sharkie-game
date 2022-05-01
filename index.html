@@ -29,23 +29,21 @@
     <script src="./js/level1.js"></script>
     <script src="./js/game.js"></script>
 </head>
-<body onload="init()">
+<body>
     <div class="opacity-container"></div>
     <h1>Sharkie</h1>
-    <button onclick="start()">Start</button>
-    
+    <img id="start-button" onclick="init()" src="img/6.Botones/Start/2.png" alt="">
     <canvas id="canvas"  width="720" height="480"></canvas>
-    <section class="explication">
-        <div class="movement-bottons-container">
+    <section class="explication" id="explication">
+        <div class="movement-buttons-container">
             <img class="title-img" src="img/6.Botones/Tittles/Move title.png" alt="">
             <img src="img/6.Botones/Key/arrow keys.png" alt="">
         </div>
-        <div class="attack-bottons-container">
+        <div class="attack-buttons-container">
             <img class="title-img" src="img/6.Botones/Tittles/Attack tittle.png" alt="">
             <img src="img/6.Botones/Key/Space Bar key.png" alt="">
             <img src="img/6.Botones/Key/D key.png" alt="">
         </div>
     </section>
-    <button onclick="stop()">Stop</button>
 </body>
 </html>

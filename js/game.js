@@ -1,17 +1,22 @@
 let canvas;
 let world;
 let keyboard = new Keyboard;
+let start = false;
 
 /**
  * this function create the world and get the canvas 
  */
 function init(){
     canvas = getById("canvas");
-    world = new World(canvas,keyboard);
-    checkIfKeyIsPressed(); 
+        world = new World(canvas,keyboard);
+        checkIfKeyIsPressed(); 
+        canvas.style.display = "block";
+        document.getElementById("start-button").style.display = "none";
+        document.getElementById("explication").style.display = "flex";
+
 }
 
-function start(){
+function starting(){
     world.start = true;
 }
 
