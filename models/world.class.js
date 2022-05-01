@@ -109,17 +109,19 @@ class World{
     collisionWithEnemy(){
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy =>{
-                if(this.character.sharkieIsColliding(enemy) && !this.character.isSlapping() || this.character.sharkieIsCollidingWithEndboss(this.level.endboss)){
+                if(this.character.sharkieIsColliding(enemy) && !this.character.isSlapping()){
                     if(enemy instanceof PufferFish && !enemy.dead && !this.character.killed && !this.character.dead){
                         this.character.hit();
                     }
                     if(enemy instanceof JellyFish && !enemy.dead && !this.character.killed && !this.character.dead){
                         this.character.shock();
-                    } else if(this.character.sharkieIsCollidingWithEndboss(this.level.endboss) && !this.character.killed && !this.character.dead){
-                        this.character.kill();
                     }
+
                 }
             })
+            if(this.character.sharkieIsCollidingWithEndboss(this.level.endboss) && !this.character.killed && !this.character.dead && !this.level.endboss.dead){
+                this.character.kill();
+            }
         }, 150);
     }
     
@@ -130,7 +132,7 @@ class World{
                     this.checkHealth();  
                 }
             })
-            if(this.character.sharkieIsCollidingWithEndboss(this.level.endboss)){
+            if(this.character.sharkieIsCollidingWithEndboss(this.level.endboss) && !this.level.endboss.dead){
                 this.checkHealth();  
                 this.checkHealth();  
                 this.checkHealth();  
