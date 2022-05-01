@@ -136,7 +136,7 @@ class Endboss extends MovableObject{
         if(this.startAttack && !this.isHurt() && this.x - world.character.x < 400 && this.x - world.character.x > 50){
             this.attack();
             this.drawImages(this.IMAGES_ATTACKING)
-            this.x -= 15;
+            this.x -= 10;
         }
     }
 

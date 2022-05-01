@@ -41,7 +41,10 @@ class World{
     poison_bottles = [];
     start = false;
     stop = false;
-   
+    win_img = new Image();
+    lose_img = new Image();
+    try_again_img = new Image();
+    
     /**
      * Set the values of {@link World#canvas} and {@link World#keyboard}.
      * @param {HTMLElement} canvas - Canvas element
@@ -50,6 +53,9 @@ class World{
     constructor(canvas,keyboard){
         this.ctx = canvas.getContext("2d");
         this.canvas = canvas;
+        this.win_img.src = "img/6.Botones/Try again/Mesa de trabajo 1.png";
+        this.lose_img.src = "img/6.Botones/Tittles/Game Over/Recurso 13.png";
+        this.try_again_img.src = "img/6.Botones/Try again/Recurso 17.png";
         this.keyboard = keyboard;
         this.draw();
         this.setWorld();
@@ -154,15 +160,33 @@ class World{
             this.health_empty = true;
             if(this.character.isKilled()){
                 this.character.killed = true;
+                this.gameOver()
             }
             if(this.character.isHurt() && !this.character.killed || this.character.isElectrocuted() && !this.character.killed){
                 this.character.dead = true;
+                this.gameOver()
             }
         }
         if(!this.health_empty){
             this.level.statusbars[0].current_img --;
             this.level.statusbars[0].img = this.level.statusbars[0].image_cache[this.level.statusbars[0].IMAGES[this.level.statusbars[0].current_img]];
         } 
+     }
+
+     gameOver(){
+         checkIfRestartIsPressed();
+         setTimeout(() => {
+             this.stop = true;
+             setTimeout(() => {
+                 if(this.level.endboss.dead){
+                     this.ctx.drawImage(this.win_img ,0,0,720,480)  
+                     this.ctx.drawImage(this.try_again_img,210,360,300,80)        
+                    } else{
+                        this.ctx.drawImage(this.lose_img ,20,80,670,200)        
+                        this.ctx.drawImage(this.try_again_img,210,360,300,80)        
+                 }   
+             }, 300);
+         }, 3000);
      }
     
     
@@ -268,6 +292,7 @@ class World{
             this.level.statusbars[3].img = this.level.statusbars[3].image_cache[this.level.statusbars[3].IMAGES[this.level.statusbars[3].current_img]];
         } else{
             this.level.endboss.dead = true;
+            this.gameOver()
         }
     }
 

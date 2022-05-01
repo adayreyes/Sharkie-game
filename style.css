@@ -5,46 +5,61 @@ body{
     justify-content: center;
     background-image: url("img/3. Background/Dark/1.png");
     position: relative;
-    overflow: hidden;
     
 }
 h1{
     color: white;
+    font-size: 3rem;
 }
+h2{
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 5rem;
+}
+
+
 .opacity-container{
     position: absolute;
     z-index: -1;
     width: 100%;
-    height: 100vh;
+    height: 99vh;
     top: 0;
     background-color: rgba(0, 0, 0, 0.616);
 }
 canvas{
     background-color: black;
     display: none;
+    width: 100%;
+    max-width: 720px;
+    object-fit: contain;
 }
 
 .explication{
-    display: none;
+    display: flex;
     flex-direction:column;
-    width: 720px;
+    max-width: 720px;
+    width: 100%;
     
     
 }
 
 .movement-buttons-container img:first-child, .attack-buttons-container img:first-child{
-    width: 200px;
+    max-width: 200px;
+    width: 100%;
 }
 
 .movement-buttons-container img:nth-child(2){
-    width: 200px;
+    max-width: 200px;
+    width: 100%;
 }
 
 .attack-buttons-container img:nth-child(2){
-    width: 300px;
+    max-width: 300px;
+    width: 100%;
 }
 .attack-buttons-container img:nth-child(3){
-    width: 80px;
+    max-width: 80px;
+    width: 100%;
 }
 
 .attack-buttons-container, .movement-buttons-container{
@@ -69,7 +84,7 @@ canvas{
     cursor: pointer;
     transition: all 100ms ease-in-out;
     position: absolute;
-    top: 50vh;
+    top: 70vh;
 }
 
 #start-button:hover{

@@ -8,14 +8,21 @@ let start = false;
  */
 function init(){
     canvas = getById("canvas");
-        world = new World(canvas,keyboard);
-        checkIfKeyIsPressed(); 
-        canvas.style.display = "block";
-        document.getElementById("start-button").style.display = "none";
-        document.getElementById("explication").style.display = "flex";
-
+    world = new World(canvas,keyboard);
+    checkIfKeyIsPressed();
+    canvas.style.display = "block";
+    document.getElementById("start-button").style.display = "none";
+    document.getElementById("explication").style.display = "none";
+    document.getElementById("instructions").style.display = "none";
+    
 }
 
+function checkIfRestartIsPressed(){
+    canvas.addEventListener("mousedown", function(e)
+    {
+        getMousePosition(canvas,e);
+    });
+}; 
 function starting(){
     world.start = true;
 }
@@ -32,6 +39,16 @@ function checkIfKeyIsPressed(){
     document.body.addEventListener("keydown",keyDown);
     document.body.addEventListener("keyup",keyUp);
 }
+
+function getMousePosition(canvas, event) {
+    let rect = canvas.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+    if(x < 510 && x > 210 && y > 360 && y < 440){
+        window.location.reload(false);
+    }
+}
+  
 
 /**
  * Check if the user press one of arrows of the keyboard
