@@ -29,12 +29,18 @@
     <script src="./js/level1.js"></script>
     <script src="./js/game.js"></script>
 </head>
-<body>
+<body  onload="init()">
     <div class="opacity-container"></div>
     <h1>Sharkie</h1>
     <h2 id="instructions">Instructions</h2>
-    <img id="start-button" onclick="init()" src="img/6.Botones/Start/2.png" alt="">
+    <img id="start-button" onclick="starting()" src="img/6.Botones/Start/3.png" alt="">
     <canvas id="canvas"  width="720" height="480"></canvas>
+    <section class="small-instructions" id="small-instructions">
+        <span>Move: Arrows</span>
+        <span>Slap: Space</span>
+        <span>Toxic bubble: D</span>
+        <img onclick="goFullScreen()" src="img/6.Botones/Full Screen/Mesa de trabajo 7.png" alt="">
+    </section>
     <section class="explication" id="explication">
         <div class="movement-buttons-container">
             <img class="title-img" src="img/6.Botones/Tittles/Move title.png" alt="">

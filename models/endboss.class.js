@@ -55,7 +55,7 @@ class Endboss extends MovableObject{
         "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 9.png",
         "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 10.png"
     ]
-
+    
     IMAGES_ATTACKING = [
         "img/2.Enemy/3 Final Enemy/Attack/1.png",
         "img/2.Enemy/3 Final Enemy/Attack/2.png",
@@ -64,12 +64,15 @@ class Endboss extends MovableObject{
         "img/2.Enemy/3 Final Enemy/Attack/5.png",
         "img/2.Enemy/3 Final Enemy/Attack/6.png"
     ]
-
     
-
+    
+    
     IMAGES_HEALTHBAR = ["img/4. Marcadores/orange/health0.png","img/4. Marcadores/orange/health20.png","img/4. Marcadores/orange/health40.png","img/4. Marcadores/orange/health60.png","img/4. Marcadores/orange/health80.png","img/4. Marcadores/orange/health100.png",]
     hadFirstContact = false;
-
+    current_img = 0;
+    startAttack = false;
+    bite_sound = new Audio("audio/bite.mp3");
+    
     constructor(){
         super().loadImage("img/2.Enemy/3 Final Enemy/1.Introduce/1.png");
         this.loadImages(this.IMAGES_STAYING);
@@ -79,15 +82,22 @@ class Endboss extends MovableObject{
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_ATTACKING);
         this.animate();
-
+        
     };
+
+    EndbossIsAttacking(){
+        let timepassed = new Date().getTime() - this.last_attack;
+        timepassed = timepassed / 1000;
+        return timepassed < .1;
+    }
 
     /**
      * This function animates the {@link Endboss}
      */
     animate(){
-        this.animateMovement();
+        this.animateMovement();  
     }
+
     /**
      * Draw a hitbox around the {@link Endboss}
      * @param {CanvasRenderingContext2D} ctx - Canvas Context
@@ -100,43 +110,35 @@ class Endboss extends MovableObject{
         ctx.stroke();
     }
     
-    /**
-     * Draw the default-images every 150ms
-     */
-    current_img = 0;
-    startAttack = false;
-    
-    EndbossIsAttacking(){
-        let timepassed = new Date().getTime() - this.last_attack;
-        timepassed = timepassed / 1000;
-        return timepassed < .1;
-    }
-
     animateMovement(){
-        setTimeout(() => {
-            setInterval(() => {
-                try {
-                    if(!this.dead){
-                        this.checkFirstContact();
-                        this.endbossAppears();
-                        this.endbossFloating();
-                        this.hurtAnimation();
-                        this.attackAnimation();
-                    } else{
-                        this.deadAnimation();
-                    } 
-                } catch (error) {
-                    return
-                }
-            }, 150);
-        }, 1000);
+        setInterval(() => {
+            try {
+                 if(!this.dead){
+                    this.endbossAnimations();
+                } else{
+                    this.deadAnimation();
+                } 
+            } catch (error) {
+                return
+            }
+        }, 150);
+        
+    }
+    
+    endbossAnimations(){
+        this.checkFirstContact();
+        this.endbossAppears();
+        this.endbossFloating();
+        this.hurtAnimation();
+        this.attackAnimation(); 
     }
 
     attackAnimation(){
         if(this.startAttack && !this.isHurt() && this.x - world.character.x < 400 && this.x - world.character.x > 50){
             this.attack();
+            this.bite_sound.play();
             this.drawImages(this.IMAGES_ATTACKING)
-            this.x -= 10;
+            this.x -= 20;
         }
     }
 
@@ -166,12 +168,14 @@ class Endboss extends MovableObject{
             }, 2000);
         }
     }
+
     endbossAppears(){
         if(this.hadFirstContact && this.current_img < 10){
             this.drawImages(this.IMAGES_APPEARING);
             this.current_img++
         }
     }
+
     endbossFloating(){
         if(this.hadFirstContact && this.current_img >= 10 && !this.isHurt() && !this.EndbossIsAttacking()){
             this.drawImages(this.IMAGES_STAYING);
@@ -183,5 +187,4 @@ class Endboss extends MovableObject{
             }
         }
     }
-
 }

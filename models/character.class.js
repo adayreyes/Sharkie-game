@@ -105,6 +105,7 @@ class Character extends MovableObject{
      * @type {Audio}
      */
     swimming_sound = new Audio("audio/swimming.mp3");
+    
 
     constructor(){
         super().loadImage("img/1.Sharkie/3.Swim/1.png");
@@ -159,7 +160,7 @@ class Character extends MovableObject{
             this.world.level.statusbars.forEach(element => {
                 element.x += this.speed
             });
-            /* this.swimming_sound.play(); */
+            this.swimming_sound.play();
         }
     }
     
@@ -170,7 +171,7 @@ class Character extends MovableObject{
             this.world.level.statusbars.forEach(element => {
                 element.x -= this.speed
             });
-            /* this.swimming_sound.play(); */
+            this.swimming_sound.play();
 
         }
     }
@@ -178,14 +179,14 @@ class Character extends MovableObject{
     moveAnimationUp(){
         if(this.world.keyboard.UP && this.y > -140){
             this.y -= this.speed;
-            /* this.swimming_sound.play(); */
+            this.swimming_sound.play();
         }
     }
 
     moveAnimationDown(){
         if(this.world.keyboard.DOWN && this.y < 250){
             this.y += this.speed;
-            /* this.swimming_sound.play(); */
+            this.swimming_sound.play();
         }
     }
 
@@ -198,12 +199,7 @@ class Character extends MovableObject{
                 this.hurtAnimation();
                 this.stayAnimation();
             }
-            if(this.dead){
-                this.deadAnimation();  
-            }
-            if(this.killed){
-                this.killedAnimation();
-            }
+            this.checkDeadAnimation()
         }, 200);
         setInterval(() => {
             if(!this.dead && !this.killed){
@@ -211,6 +207,15 @@ class Character extends MovableObject{
                 this.attackAnimation();
             }
         }, 100); 
+    }
+
+    checkDeadAnimation(){
+        if(this.dead){
+            this.deadAnimation();  
+        }
+        if(this.killed){
+            this.killedAnimation();
+        }
     }
 
     moveAnimation(){
@@ -231,7 +236,6 @@ class Character extends MovableObject{
             this.drawAttackImages(this.IMAGES_SLAPPING);
         } else{
             this.current_attack_img = 0;
-
         }
     }
 
@@ -240,15 +244,16 @@ class Character extends MovableObject{
             this.drawImages(this.IMAGES_HURT); 
          }
          else if(this.isElectrocuted() && !this.isSlapping()){
-             this.drawImages(this.IMAGES_SHOCK);
-            
+             this.drawImages(this.IMAGES_SHOCK);  
          }
     }
+
     stayAnimation(){
         if(!this.isMoving && !this.dead && !this.killed && !this.isAttacking() && !this.isHurt() && !this.isElectrocuted() && !this.isSlapping()){
             this.drawImages(this.IMAGES_STAYING)
         }
     }
+
     deadAnimation(){
             if(!this.stop){
                 this.drawImages(this.IMAGES_DEAD);
@@ -263,16 +268,21 @@ class Character extends MovableObject{
         if(!this.stop){
             this.drawImages(this.IMAGES_KILLED);
         }
+        this.moveBonesToGround();
+        setTimeout(() => {
+            this.stop = true;
+            this.loadImage("img/1.Sharkie/6.dead/2.Electro_shock/10.png")
+        }, 500);
+    }
+
+    moveBonesToGround(){
         if(this.y < 150){
             this.y += 30
         }
         if(this.y > 200){
             this.y -= 30
         }
-        setTimeout(() => {
-            this.stop = true;
-            this.loadImage("img/1.Sharkie/6.dead/2.Electro_shock/10.png")
-        }, 500);
     }
 }
+
 

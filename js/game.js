@@ -2,6 +2,8 @@ let canvas;
 let world;
 let keyboard = new Keyboard;
 let start = false;
+let game_sound = new Audio("audio/game.mp3");
+game_sound.loop = true;
 
 /**
  * this function create the world and get the canvas 
@@ -9,11 +11,6 @@ let start = false;
 function init(){
     canvas = getById("canvas");
     world = new World(canvas,keyboard);
-    checkIfKeyIsPressed();
-    canvas.style.display = "block";
-    document.getElementById("start-button").style.display = "none";
-    document.getElementById("explication").style.display = "none";
-    document.getElementById("instructions").style.display = "none";
     
 }
 
@@ -23,14 +20,30 @@ function checkIfRestartIsPressed(){
         getMousePosition(canvas,e);
     });
 }; 
+
+function goFullScreen(){
+    if(canvas.requestFullScreen)
+        canvas.requestFullScreen();
+    else if(canvas.webkitRequestFullScreen)
+        canvas.webkitRequestFullScreen();
+    else if(canvas.mozRequestFullScreen)
+        canvas.mozRequestFullScreen();
+}
+
 function starting(){
     world.start = true;
+    showCanvas();
+    checkIfKeyIsPressed();
+    game_sound.play();
 }
 
-function stop(){
-    world.stop = true;
+function showCanvas(){
+    canvas.style.display = "block";
+    getById("start-button").style.display = "none";
+    getById("explication").style.display = "none";
+    getById("instructions").style.display = "none";
+    getById("small-instructions").style.display = "flex";
 }
-
 
 /**
  * check if a key is pressed
@@ -44,7 +57,7 @@ function getMousePosition(canvas, event) {
     let rect = canvas.getBoundingClientRect();
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
-    if(x < 510 && x > 210 && y > 360 && y < 440){
+    if(x < canvas.clientWidth * 0.708 && x > canvas.clientWidth * 0.292 && y > canvas.clientHeight * 0.75 && y < canvas.clientHeight * 0.92){
         window.location.reload(false);
     }
 }

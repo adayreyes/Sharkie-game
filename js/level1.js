@@ -3,8 +3,8 @@
  * @type {object}
  */
 const LEVEL1 = new Level(
-    [new PufferFish, new PufferFish, new PufferFish, new JellyFish,new JellyFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish,new PufferFish,new JellyFish],
-    new Endboss,
+    [new PufferFish(), new PufferFish(), new PufferFish(), new JellyFish(),new JellyFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish(),new PufferFish(),new JellyFish()],
+    new Endboss(),
     {coins:[new Coin(),new Coin(),new Coin(),new Coin(),new Coin(),new Coin(),new Coin(),new Coin(),new Coin(),new Coin(),new Coin(),new Coin()],poisons:[new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison(),new Poison()],hearts:[new Heart,new Heart,new Heart,new Heart,new Heart,new Heart,new Heart,new Heart,]},
     [
         new BackgroundObject("img/3. Background/Dark/1.png",-720,0),
@@ -22,22 +22,26 @@ const LEVEL1 = new Level(
     "img/4. Marcadores/green/Life/40_  copia 3.png",
     "img/4. Marcadores/green/Life/60_  copia 3.png",
     "img/4. Marcadores/green/Life/80_  copia 3.png",
-    "img/4. Marcadores/green/Life/100_  copia 2.png"]),new Poisonbar(20,  ["img/4. Marcadores/green/poisoned bubbles/0_ copia 2.png",
+    "img/4. Marcadores/green/Life/100_  copia 2.png"]),
+    new Poisonbar(20,  ["img/4. Marcadores/green/poisoned bubbles/0_ copia 2.png",
        "img/4. Marcadores/green/poisoned bubbles/20_ copia 3.png",
         "img/4. Marcadores/green/poisoned bubbles/40_ copia 2.png",
        "img/4. Marcadores/green/poisoned bubbles/60_ copia 2.png",
         "img/4. Marcadores/green/poisoned bubbles/80_ copia 2.png",
-        "img/4. Marcadores/green/poisoned bubbles/100_ copia 3.png"]),new Coinbar(50,["img/4. Marcadores/green/Coin/0_  copia 4.png",
+        "img/4. Marcadores/green/poisoned bubbles/100_ copia 3.png"]),
+        new Coinbar(50,["img/4. Marcadores/green/Coin/0_  copia 4.png",
         "img/4. Marcadores/green/Coin/20_  copia 2.png",
        "img/4. Marcadores/green/Coin/40_  copia 4.png",
         "img/4. Marcadores/green/Coin/60_  copia 4.png",
         "img/4. Marcadores/green/Coin/80_  copia 4.png",
-        "img/4. Marcadores/green/Coin/100_ copia 4.png"]),new Healthbar(470,-50, ["img/4. Marcadores/orange/health0.png",
+        "img/4. Marcadores/green/Coin/100_ copia 4.png"]),
+        new Healthbar(470,-50, ["img/4. Marcadores/orange/health0.png",
         "img/4. Marcadores/orange/health20.png",
         "img/4. Marcadores/orange/health40.png",
         "img/4. Marcadores/orange/health60.png",
         "img/4. Marcadores/orange/health80.png",
-        "img/4. Marcadores/orange/health100.png",]),new EndbossMini()]
+        "img/4. Marcadores/orange/health100.png",]),
+        new EndbossMini()]
       
    
 );

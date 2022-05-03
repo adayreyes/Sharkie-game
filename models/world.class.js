@@ -37,13 +37,33 @@ class World{
      * @type {number}
      */
     camera_x = 0;
+    
     throwable_objects = [];
     poison_bottles = [];
+
+    health_empty = false;
+    coins_full = false;
+    poisons_full = false;
+    poisons_empty = false;
+
     start = false;
     stop = false;
+
     win_img = new Image();
     lose_img = new Image();
     try_again_img = new Image();
+
+    hurt_sound = new Audio("audio/hurt.mp3");
+    slap_sound = new Audio("audio/slap.mp3");
+    bubble_sound = new Audio("audio/bubble.mp3");
+    electro_sound = new Audio("audio/electro.mp3");
+    bottle_sound = new Audio("audio/bottle.mp3");
+    coin_sound = new Audio("audio/coin.mp3");
+    life_sound = new Audio("audio/life.mp3");
+    win_sound = new Audio("audio/win.mp3");
+    gameover_sound = new Audio("audio/gameover.mp3");
+    endboss_appears_sound = new Audio("audio/endboss_appears.mp3");
+    endboss_hurt_sound = new Audio("audio/endboss_hurt.mp3");
     
     /**
      * Set the values of {@link World#canvas} and {@link World#keyboard}.
@@ -61,7 +81,7 @@ class World{
         this.setWorld();
         this.checkCollisions();
         this.throwBubbles();
-        
+        this.endbossAppearsSound();  
     }
 
     /**
@@ -76,22 +96,24 @@ class World{
      */
     draw(){
         let self = this;
+        this.ctx.clearRect(0,0, this.canvas.width,this.canvas.height);
+        this.ctx.translate(this.camera_x,0);
+        this.fillMap();
+        this.ctx.translate(-this.camera_x,0);
         let req = requestAnimationFrame(function() {
             self.draw()
         })
-        this.ctx.clearRect(0,0, this.canvas.width,this.canvas.height);
-        this.ctx.translate(this.camera_x,0);
-        this.addGroupsOfObjectsToMap();
-        this.addToMap(this.level.endboss);
-        this.addToMap(this.character);
-        this.ctx.translate(-this.camera_x,0);
-        
         if(this.stop){
             cancelAnimationFrame(req);
         }
     }
     
-
+    fillMap(){
+        this.addGroupsOfObjectsToMap();
+        this.addToMap(this.level.endboss);
+        this.addToMap(this.character);
+    }
+    
     addGroupsOfObjectsToMap(){
         this.addObjectsToMap(this.level.background_objects);
         this.addObjectsToMap(this.level.enemies);
@@ -102,10 +124,6 @@ class World{
         this.addObjectsToMap(this.throwable_objects);
     }
     
-    health_empty = false;
-    coins_full = false;
-    poisons_full = false;
-    poisons_empty = false;
     /**
      * Check if the hitbox from each {@link Enemy} is colliding with the hitbox from the {@link Character}
      */
@@ -119,38 +137,56 @@ class World{
         this.bubbleCollisionWithEndboss();
         this.slapEnemies();
     }
+
+    increaseStatusbar(i){
+        this.level.statusbars[i].current_img ++;
+        this.level.statusbars[i].img = this.level.statusbars[i].image_cache[this.level.statusbars[i].IMAGES[this.level.statusbars[i].current_img]];
+    }
+
+    decreaseStatusbar(i){
+        this.level.statusbars[i].current_img --;
+        this.level.statusbars[i].img = this.level.statusbars[i].image_cache[this.level.statusbars[i].IMAGES[this.level.statusbars[i].current_img]];
+    }
+    
     collisionWithEnemy(){
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy =>{
-                if(this.character.sharkieIsColliding(enemy) && !this.character.isSlapping()){
-                    if(enemy instanceof PufferFish && !enemy.dead && !this.character.killed && !this.character.dead){
-                        this.character.hit();
-                    }
-                    if(enemy instanceof JellyFish && !enemy.dead && !this.character.killed && !this.character.dead){
-                        this.character.shock();
-                    }
-
+                if(this.character.sharkieIsColliding(enemy) && !this.character.isSlapping() && !this.level.endboss.dead){
+                    this.checkEnemy(enemy);
                 }
+                this.collisionWithEndboss()
             })
-            if(this.character.sharkieIsCollidingWithEndboss(this.level.endboss) && !this.character.killed && !this.character.dead && !this.level.endboss.dead){
-                this.character.kill();
-            }
         }, 150);
     }
     
+    checkEnemy(enemy){
+        if(enemy instanceof PufferFish && !enemy.dead && !this.character.killed && !this.character.dead){
+            this.character.hit();
+            this.hurt_sound.play();
+        }
+        if(enemy instanceof JellyFish && !enemy.dead && !this.character.killed && !this.character.dead){
+            this.character.shock();
+            this.electro_sound.play();
+        }
+    }
+
+    collisionWithEndboss(){
+        if(this.character.sharkieIsCollidingWithEndboss(this.level.endboss) && !this.character.killed && !this.character.dead && !this.level.endboss.dead){
+            this.character.kill();
+        }
+    }
+
     editHealthbar(){
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy => {
-                if(this.character.sharkieIsColliding(enemy) && !this.character.isSlapping()){
+                if(this.character.sharkieIsColliding(enemy) && !this.character.isSlapping() && !this.level.endboss.dead){
                     this.checkHealth();  
                 }
-            })
-            if(this.character.sharkieIsCollidingWithEndboss(this.level.endboss) && !this.level.endboss.dead){
-                this.checkHealth();  
-                this.checkHealth();  
-                this.checkHealth();  
-                 
-            }
+                })
+                if(this.character.sharkieIsCollidingWithEndboss(this.level.endboss) && !this.level.endboss.dead){
+                    this.hurt_sound.play();
+                    for (let i = 0; i < 3; i++) {this.checkHealth()};
+                }
         }, 500);
     }
     
@@ -158,37 +194,50 @@ class World{
         if(this.level.statusbars[0].current_img <= 0){
             this.level.statusbars[0].current_img = 0;
             this.health_empty = true;
-            if(this.character.isKilled()){
-                this.character.killed = true;
-                this.gameOver()
-            }
-            if(this.character.isHurt() && !this.character.killed || this.character.isElectrocuted() && !this.character.killed){
-                this.character.dead = true;
-                this.gameOver()
-            }
+            this.checkIfSharkieIsBeingKilled();
+            this.checkIfSharkieIsDying();
         }
         if(!this.health_empty){
-            this.level.statusbars[0].current_img --;
-            this.level.statusbars[0].img = this.level.statusbars[0].image_cache[this.level.statusbars[0].IMAGES[this.level.statusbars[0].current_img]];
+            this.decreaseStatusbar(0)
         } 
+    }
+    
+    checkIfSharkieIsDying(){
+         if(this.character.isHurt() && !this.character.killed || this.character.isElectrocuted() && !this.character.killed){
+             this.character.dead = true;
+             this.gameOver()
+         }
+     }
+
+     checkIfSharkieIsBeingKilled(){
+         if(this.character.isKilled()){
+             this.character.killed = true;
+             this.gameOver()
+         }   
      }
 
      gameOver(){
-         checkIfRestartIsPressed();
          setTimeout(() => {
              this.stop = true;
              setTimeout(() => {
-                 if(this.level.endboss.dead){
-                     this.ctx.drawImage(this.win_img ,0,0,720,480)  
-                     this.ctx.drawImage(this.try_again_img,210,360,300,80)        
-                    } else{
-                        this.ctx.drawImage(this.lose_img ,20,80,670,200)        
-                        this.ctx.drawImage(this.try_again_img,210,360,300,80)        
-                 }   
-             }, 300);
-         }, 3000);
+                 this.drawGameOverImage();
+                 game_sound.pause();
+                }, 300);
+            }, 3000);
+            checkIfRestartIsPressed();
+    }
+        
+    drawGameOverImage(){
+        if(this.level.endboss.dead){
+            this.ctx.drawImage(this.win_img ,0,0,720,480);  
+            this.ctx.drawImage(this.try_again_img,210,360,300,80);  
+            this.win_sound.play();      
+            } else{
+                this.ctx.drawImage(this.lose_img ,20,80,670,200);        
+                this.ctx.drawImage(this.try_again_img,210,360,300,80);
+                this.gameover_sound.play();        
+        }      
      }
-    
     
     collisionWithCoin(){
         let interval = setInterval(() => {
@@ -207,18 +256,19 @@ class World{
         }
         if(!this.coins_full){
             coin.y = -50
-            this.level.statusbars[2].current_img ++;
-            this.level.statusbars[2].img = this.level.statusbars[2].image_cache[this.level.statusbars[2].IMAGES[this.level.statusbars[2].current_img]];
+            this.increaseStatusbar(2);
+            this.coin_sound.play();
         }
     }
+
     collisionWithHeart(){
         let interval = setInterval(() => {
             this.level.items.hearts.forEach(heart =>{
                 if(this.character.sharkieIsColliding(heart)){
                     if(this.level.statusbars[0].current_img < 5){
                     heart.y = -50
-                    this.level.statusbars[0].current_img ++;
-                    this.level.statusbars[0].img = this.level.statusbars[0].image_cache[this.level.statusbars[0].IMAGES[this.level.statusbars[0].current_img]];
+                    this.increaseStatusbar(0);
+                    this.life_sound.play();
                     }
                 }
             })
@@ -244,41 +294,51 @@ class World{
         }
         if(!this.poisons_full){
             poison.y = -100
-            this.level.statusbars[1].current_img ++;
-            this.level.statusbars[1].img = this.level.statusbars[1].image_cache[this.level.statusbars[1].IMAGES[this.level.statusbars[1].current_img]];
+            this.increaseStatusbar(1);
             this.poison_bottles.push("bottle");
+            this.bottle_sound.play();
         }
     }
+
 
     bubbleCollisionWithEnemies(){
         let interval = setInterval(() => {
             this.throwable_objects.forEach(bubble =>{
                 this.level.enemies.forEach(enemy =>{
-                    if(bubble.isColliding(enemy)){
-                        bubble.y = -100;
-                        setInterval(() => {
-                            enemy.drawImages(enemy.IMG_DEAD);
-                            enemy.dead = true;
-                            if(enemy.y > -200){
-                                enemy.y -= 20;
-                                enemy.x -= 50;
-                            }
-                        }, 50);
-                    } else{
-                        setTimeout(() => {
-                            bubble.y = -100;
-                        }, 500);
-                    }
+                    this.checkIfBubbleIsCollidingWithEnemy(enemy,bubble);
                 })
             })
         }, 50);
     }
+
+    checkIfBubbleIsCollidingWithEnemy(enemy,bubble){
+        if(bubble.isColliding(enemy)){
+            bubble.y = -100;
+            setInterval(() => {
+                this.enemyDeadAnimation(enemy);
+            }, 50);
+        } else{
+            setTimeout(() => {
+                bubble.y = -100;
+            }, 500);
+        }
+    }
     
+    enemyDeadAnimation(enemy){
+        enemy.drawImages(enemy.IMG_DEAD);
+                enemy.dead = true;
+                if(enemy.y > -200){
+                    enemy.y -= 20;
+                    enemy.x -= 50;
+                }
+    }
+
     bubbleCollisionWithEndboss(){
         let interval = setInterval(() => {
             this.throwable_objects.forEach(bubble => {
                 if(bubble.isCollidingWithEndboss(this.level.endboss)){
                     bubble.y = -100;
+                    this.endboss_hurt_sound.play();
                     this.level.endboss.hit();
                     this.editEndbossbar();
                 }
@@ -288,19 +348,13 @@ class World{
 
     editEndbossbar(){
         if(this.level.statusbars[3].current_img > 0){
-            this.level.statusbars[3].current_img --;
-            this.level.statusbars[3].img = this.level.statusbars[3].image_cache[this.level.statusbars[3].IMAGES[this.level.statusbars[3].current_img]];
+            this.decreaseStatusbar(3);
         } else{
             this.level.endboss.dead = true;
             this.gameOver()
         }
     }
 
-    
-    editPoisonbar(){
-        this.level.statusbars[1].current_img --;
-        this.level.statusbars[1].img = this.level.statusbars[1].image_cache[this.level.statusbars[1].IMAGES[this.level.statusbars[1].current_img]];
-    }
 
     throwBubbles(){
         setInterval(() => {
@@ -308,6 +362,9 @@ class World{
                 if(!this.character.isAttacking()){
                     this.character.attack();
                     this.setNewBubble();
+                    setTimeout(() => {
+                     this.bubble_sound.play();
+                     }, 400);  
                 }
             }
         }, 100);
@@ -316,7 +373,7 @@ class World{
     setNewBubble(){
         if(this.poison_bottles.length != 0){
             this.poison_bottles.pop();
-            this.editPoisonbar();
+            this.decreaseStatusbar(1);
             setTimeout(() => {
                 if(this.character.other_direction){
                     this.throwable_objects.push(new ThrowableObject(this.character.x - 250,this.character.y,true))
@@ -333,6 +390,9 @@ class World{
                 if(!this.character.isSlapping()){
                     this.character.slap();
                     this.checkSlapCollision();
+                    setTimeout(() => {
+                        this.slap_sound.play();
+                    }, 400);
                 }
             }
         }, 100);
@@ -343,16 +403,20 @@ class World{
             if(this.character.sharkieIsInRange(enemy)){
                setTimeout(() => {
                 setInterval(() => {
-                    enemy.drawImages(enemy.IMG_DEAD);
-                    enemy.dead = true;
-                    if(enemy.y > -200){
-                        enemy.y -= 20;
-                        enemy.x -= 50;
-                    }
+                    this.enemyDeadAnimation(enemy);
                 }, 50);
                }, 500);
             }
         })
+    }
+
+    endbossAppearsSound(){
+        let interval = setInterval(() => {
+            if(this.character.x > 3550){
+                this.endboss_appears_sound.play();
+                clearInterval(interval)
+            }
+        }, 300);
     }
 
     /**
@@ -374,15 +438,6 @@ class World{
            this.flipImage(mo);
         } 
         mo.draw(this.ctx);
-       /*  if(mo instanceof Character){
-            mo.drawSharkieFrame(this.ctx);
-        }
-        if(mo instanceof Enemy){
-            mo.drawFrame(this.ctx)
-        }
-        if (mo instanceof Endboss){
-            mo.drawEndbossFrame(this.ctx)
-        } */
         if(mo.other_direction){
            this.flipImageBack(mo);
         } 

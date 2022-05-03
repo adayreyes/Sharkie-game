@@ -49,30 +49,30 @@ class StaticObject{
      * Create a new image for each element of the array and save this in {@link StaticObject#image_cache}
      * @param {array} arr - array with specific images paths
      */
-       loadImages(arr){
-        arr.forEach(path => {
-            let img = new Image();
-            img.src = path;
-            this.image_cache[path] = img;
-        });
-
+    loadImages(arr){
+    arr.forEach(path => {
+        let img = new Image();
+        img.src = path;
+        this.image_cache[path] = img;
+    });
     }
 
        /**
      * Create a new image and set it to the  {@link StaticObject#img}
      * @param {string} path - path from the image that should be loaded.
      */
-        loadImage(path){
-            this.img = new Image();
-            this.img.src = path
-        }
+    loadImage(path){
+        this.img = new Image();
+        this.img.src = path
+    }
+
      /**
      * Check if the hitbox from both object are in the same area.
      * @param {object} mo - {@link StaticObject}. 
      * @returns {boolean}
      */
-      isColliding(mo){
-        return this.x + this.width > mo.x && this.y + this.height > mo.y && this.x < mo.x && this.y < mo.y + mo.height 
+    isColliding(mo){
+    return this.x + this.width > mo.x && this.y + this.height > mo.y && this.x < mo.x && this.y < mo.y + mo.height 
     }
 
     /**
@@ -87,6 +87,7 @@ class StaticObject{
             console.log("could not load image", this.img);
         }
     }
+    
     /**
      * Change {@link StaticObject#img} to the next img of the array.
      * @param {array} images - array with paths (e.g {@link StaticObject#IMAGES})

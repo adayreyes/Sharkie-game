@@ -34,6 +34,20 @@ canvas{
     object-fit: contain;
 }
 
+.small-instructions{
+    display: none;
+    color: white;
+    align-items: center;
+    font-size: 1.5rem;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.small-instructions img{
+    width: 200px;
+    
+}
+
 .explication{
     display: flex;
     flex-direction:column;
@@ -84,9 +98,28 @@ canvas{
     cursor: pointer;
     transition: all 100ms ease-in-out;
     position: absolute;
-    top: 70vh;
+    top: 110%;
 }
 
 #start-button:hover{
     transform: scale(1.05);
+}
+
+@media(max-width: 800px){
+    .attack-buttons-container, .movement-buttons-container{
+        flex-direction: column;
+        padding: 0;
+    }
+
+    .movement-buttons-container{
+        gap: 1.5rem;
+    }
+
+    h2{
+        margin-bottom: 1rem;
+    }
+    #start-button{
+        top: 99%;
+        width: 250px;
+    }
 }

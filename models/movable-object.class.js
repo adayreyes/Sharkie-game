@@ -110,19 +110,24 @@ class MovableObject{
     hit(){
         this.last_hit = new Date().getTime();
     }
+
     sharkieIsColliding(mo){
         return this.x+70 + this.width-150 > mo.x && this.y+160 + this.height-250 > mo.y && this.x+70 < mo.x && this.y+160 < mo.y + mo.height 
     }
+
     isColliding(mo){
         return this.x + this.width > mo.x && this.y + this.height > mo.y && this.x < mo.x && this.y < mo.y + mo.height
     }
+
     
     isCollidingWithEndboss(endboss){
         return this.x + this.width > endboss.x + 30 && this.y + this.height > endboss.y + 180 && this.x < endboss.x + 30 && this.y < endboss.y + 180 + endboss.height -250
     }
+
     sharkieIsCollidingWithEndboss(endboss){
         return this.x +70  + this.width - 150 > endboss.x  && this.y + 160 + this.height -250 > endboss.y + 180 && this.x + 70 < endboss.x && this.y + 160 < endboss.y + 180 + endboss.height -250
     }
+
     shock(){
         this.last_shock = new Date().getTime();
     }
@@ -130,6 +135,7 @@ class MovableObject{
     attack(){
         this.last_attack = new Date().getTime();
     }
+
     slap(){
         this.last_slap = new Date().getTime();
     }
@@ -153,6 +159,7 @@ class MovableObject{
         timepassed = timepassed / 1000;
         return timepassed < 1
     }
+
     isElectrocuted(){
         let timepassed = new Date().getTime() - this.last_shock;
         timepassed = timepassed / 1000;
@@ -164,12 +171,12 @@ class MovableObject{
         timepassed = timepassed / 1000;
         return timepassed < 1;
     }
+
     isSlapping(){
         let timepassed = new Date().getTime() - this.last_slap;
         timepassed = timepassed / 1000;
         return timepassed < 1;
     }
-
 
     /**
      * Draw the img from {@link MovableObject#img} on the canvas.
@@ -195,6 +202,7 @@ class MovableObject{
         ctx.rect(this.x+70,this.y+160,this.width-150,this.height-250);
         ctx.stroke();
     }
+
     drawFrame(ctx){
         ctx.beginPath();
         ctx.lineWidth = "5";
@@ -203,13 +211,18 @@ class MovableObject{
         ctx.stroke();
     }
 
-    
     /**
      * Move the object to the left, changing de value of {@link MovableObject#x}
      */
     moveLeft(){
         setInterval(()=>{
-            this.x -= this.speed;
+            try {
+                if(world.start){
+                    this.x -= this.speed;
+                }
+            } catch (error) {
+                return
+            }
         },1000/60)
     }
     
@@ -232,6 +245,7 @@ class MovableObject{
         this.img = this.image_cache[path];
         this.current_img++;
     }
+    
     drawAttackImages(images){
         let i = this.current_attack_img % images.length;
         let path = images[i];
