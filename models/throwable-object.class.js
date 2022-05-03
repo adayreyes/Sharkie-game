@@ -1,3 +1,7 @@
+/**
+ * @class ThrowableObject
+ * @extends MovableObject
+ */
 class ThrowableObject extends MovableObject {
    
     constructor(x,y,bool){
@@ -10,6 +14,10 @@ class ThrowableObject extends MovableObject {
         this.other_direction = bool;
     }
     
+    /**
+     * Play animation of the bubble moving.
+     * @see {@link World#setNewBubble}
+     */
     throwBubble(){
         setInterval(() => {
             if(this.other_direction){

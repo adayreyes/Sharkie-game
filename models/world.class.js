@@ -37,7 +37,7 @@ class World{
      * @type {number}
      */
     camera_x = 0;
-    
+
     throwable_objects = [];
     poison_bottles = [];
 
@@ -210,7 +210,7 @@ class World{
      }
 
      checkIfSharkieIsBeingKilled(){
-         if(this.character.isKilled()){
+         if(this.character.isBeingKilled()){
              this.character.killed = true;
              this.gameOver()
          }   

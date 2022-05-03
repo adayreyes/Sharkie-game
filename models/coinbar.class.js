@@ -1,3 +1,7 @@
+/**
+ * @class Coinbar
+ * @extends Statusbar
+ */
 class Coinbar extends Statusbar{
     constructor(y,images){
         super().IMAGES = images

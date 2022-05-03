@@ -1,3 +1,7 @@
+/**
+ * @class Healthbar
+ * @extends Statusbar
+ */
 class Healthbar extends Statusbar{
     constructor(x,y,images){
         super().IMAGES = images

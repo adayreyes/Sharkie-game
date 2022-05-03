@@ -3,7 +3,7 @@
  * @extends Enemy
  */
 class PufferFish extends Enemy{
-    IMAGES_STAYING = [
+    IMAGES_FLOATING = [
         "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim1.png",
         "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim2.png",
         "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim3.png",
@@ -20,19 +20,23 @@ class PufferFish extends Enemy{
         "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim4.png",
         "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim5.png"
     ];
-    IMG_DEAD = ["img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 1 (can animate by going up).png"]
+    IMAGES_DEAD = ["img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 1 (can animate by going up).png"]
     
     constructor(){
         super().loadImage("img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim1.png");
-        this.loadImages(this.IMAGES_STAYING);
-        this.loadImages(this.IMG_DEAD);
+        this.loadImages(this.IMAGES_FLOATING);
+        this.loadImages(this.IMAGES_DEAD);
         this.animate();
     }
+
+    /**
+     * Play the animation of the fish moving.
+     */
     animate(){
         this.moveLeft();
         setInterval(()=>{
             if(!this.dead){
-                this.drawImages(this.IMAGES_STAYING)
+                this.drawImages(this.IMAGES_FLOATING)
             }
         },200)
     }

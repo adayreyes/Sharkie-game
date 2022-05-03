@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: models/background-object.class.js</title>
+    <title>JSDoc: Source: models/coinbar.class.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: models/background-object.class.js</h1>
+    <h1 class="page-title">Source: models/coinbar.class.js</h1>
 
     
 
@@ -27,18 +27,16 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @class BackgroundObject
- * @extends MovableObject
+ * @class Coinbar
+ * @extends Statusbar
  */
-class BackgroundObject extends MovableObject{
-   width = 720;
-   height = 480;
-    constructor(imagePath,x,y){
-        super().loadImage(imagePath);
-        this.x = x;
+class Coinbar extends Statusbar{
+    constructor(y,images){
+        super().IMAGES = images
+        this.loadImage(images[this.current_img]);
+        this.loadImages(images);
         this.y = y;
     }
-
 }</code></pre>
         </article>
     </section>

@@ -22,6 +22,10 @@ class Poison extends StaticObject{
         this.loadImages(this.IMAGES);
         this.animate();
     }
+
+     /**
+     * Play the animation of the poison floating.
+     */
     animate(){
         setInterval(()=>{
             this.drawImages(this.IMAGES)

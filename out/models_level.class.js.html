@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: models/background-object.class.js</title>
+    <title>JSDoc: Source: models/level.class.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: models/background-object.class.js</h1>
+    <h1 class="page-title">Source: models/level.class.js</h1>
 
     
 
@@ -27,18 +27,54 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @class BackgroundObject
- * @extends MovableObject
+ * @class Level
  */
-class BackgroundObject extends MovableObject{
-   width = 720;
-   height = 480;
-    constructor(imagePath,x,y){
-        super().loadImage(imagePath);
-        this.x = x;
-        this.y = y;
-    }
+class Level{
+    /**
+     * Array of objects with all enemies.
+     * @see {@link JellyFish}
+     * @see {@link PufferFish}
+     * @type {Array}
+     */
+    enemies;
+    /**
+     * @see {@link Endboss}
+     * @type {Object}
+     */
+    endboss;
 
+    /**
+     * Array of objects with all items.
+     * @see {@link Coin}
+     * @see {@link Poison}
+     * @see {@link Heart}
+     * @type {Array}
+     */
+    items;
+
+    /**
+     * Array of objects with all background objects.
+     * @see {@link BackgroundObject}
+     * @type {Array}
+     */
+    background_objects;
+
+    /**
+     * Array of objects with all statusbars.
+     * @see {@link Healthbar} 
+     * @see {@link Coinbar}
+     * @see {@link Poisonbar}
+     * @type {Array}
+     */
+    statusbars;
+
+    constructor(enemies,endboss,items,background_objects,statusbars){
+        this.enemies = enemies;
+        this.endboss = endboss;
+        this.items = items;
+        this.background_objects = background_objects;
+        this.statusbars = statusbars;
+    }
 }</code></pre>
         </article>
     </section>

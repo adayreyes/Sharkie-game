@@ -28,19 +28,15 @@
         <article>
             <pre class="prettyprint source linenums"><code>/**
  * @class Endboss
- * @extends Enemy
+ * @extends MovableObject
  */
-class Endboss extends Enemy{
+class Endboss extends MovableObject{
     x = 4000;
     y = 0;
     img = "img/2.Enemy/3 Final Enemy/2.floating/1.png";
     width = 400;
     height = 400;
 
-    /**
-     * Array with all appearing-images paths
-     * @type {Array}
-     */
     IMAGES_APPEARING = [
         "img/2.Enemy/3 Final Enemy/1.Introduce/1.png",
         "img/2.Enemy/3 Final Enemy/1.Introduce/2.png",
@@ -53,7 +49,8 @@ class Endboss extends Enemy{
         "img/2.Enemy/3 Final Enemy/1.Introduce/9.png",
         "img/2.Enemy/3 Final Enemy/1.Introduce/10.png",
     ];
-    IMAGES_STAYING = [
+
+    IMAGES_FLOATING = [
         "img/2.Enemy/3 Final Enemy/2.floating/1.png",
         "img/2.Enemy/3 Final Enemy/2.floating/2.png",
         "img/2.Enemy/3 Final Enemy/2.floating/3.png",
@@ -67,30 +64,205 @@ class Endboss extends Enemy{
         "img/2.Enemy/3 Final Enemy/2.floating/11.png",
         "img/2.Enemy/3 Final Enemy/2.floating/12.png",
         "img/2.Enemy/3 Final Enemy/2.floating/13.png",
-    ]
-    constructor(){
-        super().loadImage(this.img);
-        this.loadImages(this.IMAGES_STAYING);
-        this.animate();
+    ];
 
+    IMAGES_HURT = [
+        "img/2.Enemy/3 Final Enemy/Hurt/1.png",
+        "img/2.Enemy/3 Final Enemy/Hurt/2.png",
+        "img/2.Enemy/3 Final Enemy/Hurt/3.png",
+        "img/2.Enemy/3 Final Enemy/Hurt/4.png"
+    ]
+
+    IMAGES_DEAD = [
+        "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 6.png",
+        "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 7.png",
+        "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 8.png",
+        "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 9.png",
+        "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 10.png"
+    ]
+    
+    IMAGES_ATTACK = [
+        "img/2.Enemy/3 Final Enemy/Attack/1.png",
+        "img/2.Enemy/3 Final Enemy/Attack/2.png",
+        "img/2.Enemy/3 Final Enemy/Attack/3.png",
+        "img/2.Enemy/3 Final Enemy/Attack/4.png",
+        "img/2.Enemy/3 Final Enemy/Attack/5.png",
+        "img/2.Enemy/3 Final Enemy/Attack/6.png"
+    ]
+    
+    /**
+     * Array with all image paths for the endboss healthbar animation.
+     * @type {Array}
+     */
+    IMAGES_HEALTHBAR = ["img/4. Marcadores/orange/health0.png","img/4. Marcadores/orange/health20.png","img/4. Marcadores/orange/health40.png","img/4. Marcadores/orange/health60.png","img/4. Marcadores/orange/health80.png","img/4. Marcadores/orange/health100.png",]
+
+    /**
+     * Used to know if Sharkie have already seen the endboss.
+     * @type {Boolean}
+     * @see {@link Endboss#checkFirstContact}
+     */
+    hadFirstContact = false;
+
+    /**
+     * Used to know which img from an array is being used.
+     * @type {Number}
+     */
+    current_img = 0;
+
+    /**
+     * Used to set when the endboss starts to attack.
+     * @see {@link Endboss#checkFirstContact}
+     */
+    startAttack = false;
+
+    /**
+     * Sound played when Endboss is attacking.
+     */
+    bite_sound = new Audio("audio/bite.mp3");
+    
+    constructor(){
+        super().loadImage("img/2.Enemy/3 Final Enemy/1.Introduce/1.png");
+        this.loadImages(this.IMAGES_FLOATING);
+        this.loadImages(this.IMAGES_APPEARING);
+        this.loadImages(this.IMAGES_HURT);
+        this.loadImages(this.IMAGES_HEALTHBAR);
+        this.loadImages(this.IMAGES_DEAD);
+        this.loadImages(this.IMAGES_ATTACK);
+        this.animate();
+        
     };
+
+    /**
+     * Check if {@link Endboss#last_attack} was called in the last 1s.
+     * @returns {boolean} 
+     */
+    endbossIsAttacking(){
+        let timepassed = new Date().getTime() - this.last_attack;
+        timepassed = timepassed / 1000;
+        return timepassed &lt; .1;
+    }
 
     /**
      * This function animates the {@link Endboss}
      */
     animate(){
-        this.animateMovement();
+        this.animateMovement();  
+    }
+
+    /**
+     * Draw a hitbox around the {@link Endboss}
+     * @param {CanvasRenderingContext2D} ctx - Canvas Context
+     */
+     drawEndbossFrame(ctx){
+        ctx.beginPath();
+        ctx.lineWidth = "5";
+        ctx.strokeStyle = "blue";
+        ctx.rect(this.x,this.y+180,this.width-100,this.height-250);
+        ctx.stroke();
+    }
+    
+
+    /**
+     * Check if the Endboss is dead and play the respective animation.
+     */
+    animateMovement(){
+        setInterval(() => {
+            try {
+                 if(!this.dead){
+                    this.endbossAnimations();
+                } else{
+                    this.deadAnimation();
+                } 
+            } catch (error) {
+                return
+            }
+        }, 150);
+        
     }
     
     /**
-     * Draw the default-images every 150ms
+     * Function with all Endboss animations when it is alive.
      */
-    animateMovement(){
-        setInterval(()=>{
-            this.drawImages(this.IMAGES_STAYING)
-        },150)
+    endbossAnimations(){
+        this.checkFirstContact();
+        this.endbossAppears();
+        this.endbossFloating();
+        this.hurtAnimation();
+        this.attackAnimation(); 
     }
 
+    /**
+     * Check if the Endboss is attacking and play the animation.
+     */
+    attackAnimation(){
+        if(this.startAttack &amp;&amp; !this.isHurt() &amp;&amp; this.x - world.character.x &lt; 400 &amp;&amp; this.x - world.character.x > 50){
+            this.attack();
+            this.bite_sound.play();
+            this.drawImages(this.IMAGES_ATTACK)
+            this.x -= 20;
+        }
+    }
+
+    /**
+     * Check if the Endboss is being hurt and play the animation.
+     */
+    hurtAnimation(){
+        if(this.isHurt()){
+            this.drawImages(this.IMAGES_HURT); 
+         }
+    }
+
+    /**
+     * Check if the Endboss is dying and play the animation.
+     */
+    deadAnimation(){
+        if(!this.stop){
+            this.drawImages(this.IMAGES_DEAD);
+        }
+        setTimeout(() => {
+            this.stop = true;
+            this.loadImage("img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 10.png")
+        }, 800);
+    }
+
+    /**
+     * Check if {@link Character} reachs the position of the Endboss and make it appear.
+     */
+    checkFirstContact(){
+        if(world.character.x > 3550){
+            this.hadFirstContact = true;
+            world.level.statusbars[4].y = -30;
+            world.level.statusbars[3].y = 30;
+            setTimeout(() => {
+                this.startAttack = true;
+            }, 2000);
+        }
+    }
+
+    /**
+     * Play the animation of the Endboss appearing.
+     */
+    endbossAppears(){
+        if(this.hadFirstContact &amp;&amp; this.current_img &lt; 10){
+            this.drawImages(this.IMAGES_APPEARING);
+            this.current_img++
+        }
+    }
+
+    /**
+     * Play the animation of the Endboss floating.
+     */
+    endbossFloating(){
+        if(this.hadFirstContact &amp;&amp; this.current_img >= 10 &amp;&amp; !this.isHurt() &amp;&amp; !this.endbossIsAttacking()){
+            this.drawImages(this.IMAGES_FLOATING);
+            if(world.character.y > -100){
+                this.y = world.character.y - 100;
+            }
+            if(this.x - world.character.x > 550){
+                this.x = world.character.x + 550;
+            }
+        }
+    }
 }</code></pre>
         </article>
     </section>
@@ -101,13 +273,13 @@ class Endboss extends Enemy{
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="Heart.html">Heart</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="Poison.html">Poison</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="StaticObject.html">StaticObject</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#checkIfKeyIsPressed">checkIfKeyIsPressed</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#keyDown">keyDown</a></li><li><a href="global.html#keyUp">keyUp</a></li><li><a href="global.html#LEVEL1">LEVEL1</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossMini.html">EndbossMini</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="Heart.html">Heart</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="Poison.html">Poison</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="StaticObject.html">StaticObject</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#cannotPlay">cannotPlay</a></li><li><a href="global.html#canvas">canvas</a></li><li><a href="global.html#checkIfKeyIsPressed">checkIfKeyIsPressed</a></li><li><a href="global.html#checkIfRestartIsPressed">checkIfRestartIsPressed</a></li><li><a href="global.html#checkMobil">checkMobil</a></li><li><a href="global.html#game_sound">game_sound</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#getMousePosition">getMousePosition</a></li><li><a href="global.html#goFullScreen">goFullScreen</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isMobile">isMobile</a></li><li><a href="global.html#keyboard">keyboard</a></li><li><a href="global.html#keyDown">keyDown</a></li><li><a href="global.html#keyUp">keyUp</a></li><li><a href="global.html#LEVEL1">LEVEL1</a></li><li><a href="global.html#showCanvas">showCanvas</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#starting">starting</a></li><li><a href="global.html#world">world</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Apr 08 2022 11:01:12 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Tue May 03 2022 18:04:37 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

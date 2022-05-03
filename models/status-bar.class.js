@@ -1,5 +1,5 @@
 /**
- * Class for statusbars like health bar
+ * Class for statusbars
  * @class Statusbar 
  * @extends StaticObject
  */

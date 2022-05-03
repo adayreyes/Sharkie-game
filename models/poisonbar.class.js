@@ -1,3 +1,7 @@
+/**
+ * @class Poisonbar
+ * @extends Statusbar
+ */
 class Poisonbar extends Statusbar{
     constructor(y,images){
         super().IMAGES = images

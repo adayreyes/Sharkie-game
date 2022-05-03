@@ -1,3 +1,7 @@
+/**
+ * @class EndbossMini
+ * @extends Statusbar
+ */
 class EndbossMini extends Statusbar{
     x = 530;
     y = -100;

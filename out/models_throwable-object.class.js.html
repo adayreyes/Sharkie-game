@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: models/background-object.class.js</title>
+    <title>JSDoc: Source: models/throwable-object.class.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: models/background-object.class.js</h1>
+    <h1 class="page-title">Source: models/throwable-object.class.js</h1>
 
     
 
@@ -27,18 +27,35 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @class BackgroundObject
+ * @class ThrowableObject
  * @extends MovableObject
  */
-class BackgroundObject extends MovableObject{
-   width = 720;
-   height = 480;
-    constructor(imagePath,x,y){
-        super().loadImage(imagePath);
-        this.x = x;
-        this.y = y;
+class ThrowableObject extends MovableObject {
+   
+    constructor(x,y,bool){
+        super().loadImage("img/1.Sharkie/4.Attack/Bubble trap/Poisoned Bubble (for whale).png");
+        this.x = x + 250;
+        this.y = y + 170;
+        this.width = 40;
+        this.height = 40;
+        this.throwBubble(100,400);
+        this.other_direction = bool;
     }
-
+    
+    /**
+     * Play animation of the bubble moving.
+     * @see {@link World#setNewBubble}
+     */
+    throwBubble(){
+        setInterval(() => {
+            if(this.other_direction){
+                this.x -= 10;
+            } else{
+                this.x += 10;
+            }
+        }, 50);
+    }
+    
 }</code></pre>
         </article>
     </section>

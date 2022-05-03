@@ -9,10 +9,6 @@ class Endboss extends MovableObject{
     width = 400;
     height = 400;
 
-    /**
-     * Array with all appearing-images paths
-     * @type {Array}
-     */
     IMAGES_APPEARING = [
         "img/2.Enemy/3 Final Enemy/1.Introduce/1.png",
         "img/2.Enemy/3 Final Enemy/1.Introduce/2.png",
@@ -25,7 +21,8 @@ class Endboss extends MovableObject{
         "img/2.Enemy/3 Final Enemy/1.Introduce/9.png",
         "img/2.Enemy/3 Final Enemy/1.Introduce/10.png",
     ];
-    IMAGES_STAYING = [
+
+    IMAGES_FLOATING = [
         "img/2.Enemy/3 Final Enemy/2.floating/1.png",
         "img/2.Enemy/3 Final Enemy/2.floating/2.png",
         "img/2.Enemy/3 Final Enemy/2.floating/3.png",
@@ -56,7 +53,7 @@ class Endboss extends MovableObject{
         "img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 10.png"
     ]
     
-    IMAGES_ATTACKING = [
+    IMAGES_ATTACK = [
         "img/2.Enemy/3 Final Enemy/Attack/1.png",
         "img/2.Enemy/3 Final Enemy/Attack/2.png",
         "img/2.Enemy/3 Final Enemy/Attack/3.png",
@@ -65,27 +62,53 @@ class Endboss extends MovableObject{
         "img/2.Enemy/3 Final Enemy/Attack/6.png"
     ]
     
-    
-    
+    /**
+     * Array with all image paths for the endboss healthbar animation.
+     * @type {Array}
+     */
     IMAGES_HEALTHBAR = ["img/4. Marcadores/orange/health0.png","img/4. Marcadores/orange/health20.png","img/4. Marcadores/orange/health40.png","img/4. Marcadores/orange/health60.png","img/4. Marcadores/orange/health80.png","img/4. Marcadores/orange/health100.png",]
+
+    /**
+     * Used to know if Sharkie have already seen the endboss.
+     * @type {Boolean}
+     * @see {@link Endboss#checkFirstContact}
+     */
     hadFirstContact = false;
+
+    /**
+     * Used to know which img from an array is being used.
+     * @type {Number}
+     */
     current_img = 0;
+
+    /**
+     * Used to set when the endboss starts to attack.
+     * @see {@link Endboss#checkFirstContact}
+     */
     startAttack = false;
+
+    /**
+     * Sound played when Endboss is attacking.
+     */
     bite_sound = new Audio("audio/bite.mp3");
     
     constructor(){
         super().loadImage("img/2.Enemy/3 Final Enemy/1.Introduce/1.png");
-        this.loadImages(this.IMAGES_STAYING);
+        this.loadImages(this.IMAGES_FLOATING);
         this.loadImages(this.IMAGES_APPEARING);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_HEALTHBAR);
         this.loadImages(this.IMAGES_DEAD);
-        this.loadImages(this.IMAGES_ATTACKING);
+        this.loadImages(this.IMAGES_ATTACK);
         this.animate();
         
     };
 
-    EndbossIsAttacking(){
+    /**
+     * Check if {@link Endboss#last_attack} was called in the last 1s.
+     * @returns {boolean} 
+     */
+    endbossIsAttacking(){
         let timepassed = new Date().getTime() - this.last_attack;
         timepassed = timepassed / 1000;
         return timepassed < .1;
@@ -110,6 +133,10 @@ class Endboss extends MovableObject{
         ctx.stroke();
     }
     
+
+    /**
+     * Check if the Endboss is dead and play the respective animation.
+     */
     animateMovement(){
         setInterval(() => {
             try {
@@ -125,6 +152,9 @@ class Endboss extends MovableObject{
         
     }
     
+    /**
+     * Function with all Endboss animations when it is alive.
+     */
     endbossAnimations(){
         this.checkFirstContact();
         this.endbossAppears();
@@ -133,21 +163,30 @@ class Endboss extends MovableObject{
         this.attackAnimation(); 
     }
 
+    /**
+     * Check if the Endboss is attacking and play the animation.
+     */
     attackAnimation(){
         if(this.startAttack && !this.isHurt() && this.x - world.character.x < 400 && this.x - world.character.x > 50){
             this.attack();
             this.bite_sound.play();
-            this.drawImages(this.IMAGES_ATTACKING)
+            this.drawImages(this.IMAGES_ATTACK)
             this.x -= 20;
         }
     }
 
+    /**
+     * Check if the Endboss is being hurt and play the animation.
+     */
     hurtAnimation(){
         if(this.isHurt()){
             this.drawImages(this.IMAGES_HURT); 
          }
     }
 
+    /**
+     * Check if the Endboss is dying and play the animation.
+     */
     deadAnimation(){
         if(!this.stop){
             this.drawImages(this.IMAGES_DEAD);
@@ -158,6 +197,9 @@ class Endboss extends MovableObject{
         }, 800);
     }
 
+    /**
+     * Check if {@link Character} reachs the position of the Endboss and make it appear.
+     */
     checkFirstContact(){
         if(world.character.x > 3550){
             this.hadFirstContact = true;
@@ -169,6 +211,9 @@ class Endboss extends MovableObject{
         }
     }
 
+    /**
+     * Play the animation of the Endboss appearing.
+     */
     endbossAppears(){
         if(this.hadFirstContact && this.current_img < 10){
             this.drawImages(this.IMAGES_APPEARING);
@@ -176,9 +221,12 @@ class Endboss extends MovableObject{
         }
     }
 
+    /**
+     * Play the animation of the Endboss floating.
+     */
     endbossFloating(){
-        if(this.hadFirstContact && this.current_img >= 10 && !this.isHurt() && !this.EndbossIsAttacking()){
-            this.drawImages(this.IMAGES_STAYING);
+        if(this.hadFirstContact && this.current_img >= 10 && !this.isHurt() && !this.endbossIsAttacking()){
+            this.drawImages(this.IMAGES_FLOATING);
             if(world.character.y > -100){
                 this.y = world.character.y - 100;
             }

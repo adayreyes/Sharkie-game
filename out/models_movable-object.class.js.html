@@ -66,18 +66,54 @@ class MovableObject{
      * @type {array}
      */
     image_cache = {};
-
-     /**
+    
+    /**
      *Determite which image should be used (position in array)
      * @type {number}
      */
     current_img = 0;
+    
+    /**
+     * Array with all image paths for the move animation.
+     * @see {@link Character#moveAnimation}.
+     * @type {Array}
+     */
+     IMAGES_SWIMMING = [];
+
+    /**
+     * Array with all appearing-images paths for the appearing animation.
+     * @see {@link Endboss#endbossAppears}
+     * @type {Array}
+     */
+     IMAGES_APPEARING = [];
 
      /**
-     * Array with the path of all default-images paths
-     * @type {array}
+     * Array with all floating-images paths for the floating animation.
+     * @see {@link Endboss#endbossFloating}
+     * @type {Array}
      */
-    IMAGES_STAYING;
+    IMAGES_FLOATING = [];
+
+    /**
+     * Array with all image paths for the move animation.
+     * @see {@link Character#deadAnimation}.
+     * @type {Array}
+     */
+     IMAGES_DEAD = [];
+
+     /**
+     * Array with all image paths for the hurt animation.
+     * @see {@link Character#hurtAnimation}.
+     * @type {Array}
+     */
+      IMAGES_HURT = [];
+
+    /**
+     * Array with all image paths for the attack animation.
+     * @see {@link Character#attackAnimation}.
+     * @type {Array}
+     */
+     IMAGES_ATTACK = [];
 
      /**
      *Determinate how fast should the object move
@@ -98,14 +134,24 @@ class MovableObject{
     life = 100;
 
      /**
-     * Is used to check if the object has no more life
+     * Is used to check if the object has no life
      * @type {boolean}
      */
     dead = false;
 
+    /**
+     * Used to know which attack image is being used
+     */
+    current_attack_img = 0;
 
     /**
-     * Create a new image and set it to the  {@link MovableObject#img}
+     * Used to stop the game when {@link Character} or {@link Endboss} is dead
+     */
+    stop = false;
+    
+
+    /**
+     * Create a new image and set it to the  {@link MovableObject#img}.
      * @param {string} path - path from the image that should be loaded.
      */
     loadImage(path){
@@ -114,8 +160,8 @@ class MovableObject{
     }
 
     /**
-     * Create a new image for each element of the array and save this in {@link MovableObject#image_cache}
-     * @param {array} arr - array with specific images paths
+     * Create a new image for each element of the array and save this in {@link MovableObject#image_cache}.
+     * @param {array} arr - array with specific images paths.
      */
     loadImages(arr){
         arr.forEach(path => {
@@ -123,26 +169,97 @@ class MovableObject{
             img.src = path;
             this.image_cache[path] = img;
         });
-
     }
 
     /**
-     * Decrease the value of {@link MovableObject#life} 
+     * Decrease the value of {@link MovableObject#life}.
      * Change the value of {@link MovableObject#dead} to true if {@link MovableObject#life} is = 0.
      * Set the time when this function is called
      */
     hit(){
-        this.life -= 2;
-        if(this.life &lt; 0){
-            this.life = 0
-            this.dead = true;
-        } else {
-            this.last_hit = new Date().getTime();
-        }
+        this.last_hit = new Date().getTime();
     }
 
     /**
-     * Check if {@link MovableObject#hit} was called in the last 1s  .
+     * Check if Sharkie is colliding with other {@link MovableObject}
+     * @param {Object} mo - {@link MovableObject}
+     * @returns {Boolean}
+     */
+    sharkieIsColliding(mo){
+        return this.x+70 + this.width-150 > mo.x &amp;&amp; this.y+160 + this.height-250 > mo.y &amp;&amp; this.x+70 &lt; mo.x &amp;&amp; this.y+160 &lt; mo.y + mo.height 
+    }
+
+    /**
+     * Check if an object is colling with other {@link MovableObject}
+     * @param {Object} mo - {@link MovableObject}
+     * @returns {Boolean}
+     */
+    isColliding(mo){
+        return this.x + this.width > mo.x &amp;&amp; this.y + this.height > mo.y &amp;&amp; this.x &lt; mo.x &amp;&amp; this.y &lt; mo.y + mo.height
+    }
+
+    /**
+     * Check if an object ist colliding with the endboss.
+     * @param {Object} endboss - endboss object.
+     * @returns {Boolean}
+     */
+    isCollidingWithEndboss(endboss){
+        return this.x + this.width > endboss.x + 30 &amp;&amp; this.y + this.height > endboss.y + 180 &amp;&amp; this.x &lt; endboss.x + 30 &amp;&amp; this.y &lt; endboss.y + 180 + endboss.height -250
+    }
+
+    /**
+     * Check if Sharkie is colliding with the endboss.
+     * @param {Object} endboss - endboss object.
+     * @returns {Boolean}
+     */
+    sharkieIsCollidingWithEndboss(endboss){
+        return this.x +70  + this.width - 150 > endboss.x  &amp;&amp; this.y + 160 + this.height -250 > endboss.y + 180 &amp;&amp; this.x + 70 &lt; endboss.x &amp;&amp; this.y + 160 &lt; endboss.y + 180 + endboss.height -250
+    }
+
+    /**
+     * Set the time at the function is called.
+     * Used for the function @see {@link MovableObject#isElectrocuted}.
+     */
+    shock(){
+        this.last_shock = new Date().getTime();
+    }
+
+    /**
+     * Set the time at the function is called.
+     * Used for the function @see {@link MovableObject#isAttacking}.
+     */
+    attack(){
+        this.last_attack = new Date().getTime();
+    }
+
+    /**
+     * Set the time at the function is called.
+     * Used for the function @see {@link MovableObject#isSlapping}.
+     */
+    slap(){
+        this.last_slap = new Date().getTime();
+    }
+
+    /**
+     * Set the time at the function is called.
+     * Used for the function @see {@link MovableObject#isBeingKilled}.
+     */
+    kill(){
+        this.kill_attack = new Date().getTime();
+    }
+
+    /**
+     * Check if {@link MovableObject#kill} was called in the last 1s.
+     * @returns {boolean} 
+     */
+    isBeingKilled(){
+        let timepassed = new Date().getTime() - this.kill_attack;
+        timepassed = timepassed / 1000;
+        return timepassed &lt; 1
+    }
+
+    /**
+     * Check if {@link MovableObject#hit} was called in the last 1s.
      * @returns {boolean} 
      */
     isHurt(){
@@ -152,33 +269,64 @@ class MovableObject{
     }
 
     /**
-     * Check if the hitbox from Sharkie is colliding with the hitbox from the enemies.
-     * @param {object} mo - {@link MovableObject}. 
-     * @returns {boolean}
+     * Check if {@link MovableObject#shock} was called in the last 1s.
+     * @returns {boolean} 
      */
-    isColliding(mo){
-        return this.x+60 + this.width-120 > mo.x &amp;&amp; this.y+150 + this.height-230 > mo.y &amp;&amp; this.x+60 &lt; mo.x &amp;&amp; this.y+150 &lt; mo.y + mo.height 
+    isElectrocuted(){
+        let timepassed = new Date().getTime() - this.last_shock;
+        timepassed = timepassed / 1000;
+        return timepassed &lt; 1
+    }
+
+    /**
+     * Check if {@link MovableObject#attack} was called in the last 1s.
+     * @returns {boolean} 
+     */
+    isAttacking(){
+        let timepassed = new Date().getTime() - this.last_attack;
+        timepassed = timepassed / 1000;
+        return timepassed &lt; 1;
+    }
+
+    /**
+     * Check if {@link MovableObject#slap} was called in the last 1s.
+     * @returns {boolean} 
+     */
+    isSlapping(){
+        let timepassed = new Date().getTime() - this.last_slap;
+        timepassed = timepassed / 1000;
+        return timepassed &lt; 1;
     }
 
     /**
      * Draw the img from {@link MovableObject#img} on the canvas.
-     * @param {CanvasRenderingContext2D} ctx - Canvas Context
+     * @param {CanvasRenderingContext2D} ctx - Canvas Context.
      */
     draw(ctx){
-        ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
+        try{
+            ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
+        } catch(e){
+            console.warn("error loading image",e);
+            console.log("could not load image", this.img.src);
+        }
     }
 
     /**
-     * Draw a hitbox around the objects with the class {@link Character} or {@link Enemy}
-     * @param {CanvasRenderingContext2D} ctx - Canvas Context
+     * Draw a hitbox around Sharkie @see {@link Character}.
+     * @param {CanvasRenderingContext2D} ctx - Canvas Context.
      */
     drawSharkieFrame(ctx){
         ctx.beginPath();
         ctx.lineWidth = "5";
         ctx.strokeStyle = "blue";
-        ctx.rect(this.x+60,this.y+150,this.width-120,this.height-230);
+        ctx.rect(this.x+70,this.y+160,this.width-150,this.height-250);
         ctx.stroke();
     }
+
+     /**
+     * Draw a hitbox around the object.
+     * @param {CanvasRenderingContext2D} ctx - Canvas Context.
+     */
     drawFrame(ctx){
         ctx.beginPath();
         ctx.lineWidth = "5";
@@ -187,28 +335,33 @@ class MovableObject{
         ctx.stroke();
     }
 
-    
     /**
-     * Move the object to the left, changing de value of {@link MovableObject#x}
+     * Move the object to the left, changing de value of {@link MovableObject#x}.
      */
     moveLeft(){
         setInterval(()=>{
-            this.x -= this.speed;
+            try {
+                if(world.start){
+                    this.x -= this.speed;
+                }
+            } catch (error) {
+                return
+            }
         },1000/60)
     }
     
     /**
-     * Move the object to the right, changing de value of {@link MovableObject#x}
+     * Move the object to the right, changing de value of {@link MovableObject#x}.
      */
     moveRight(){
-        setInterval(()=>{
+       setInterval(()=>{
             this.x += this.speed;
         },1000/60)
     }
 
     /**
      * Change {@link MovableObject#img} to the next img of the array.
-     * @param {array} images - array with paths (e.g {@link MovableObject#IMAGES_STAYING})
+     * @param {array} images - array with paths (e.g {@link MovableObject#IMAGES_STAYING}).
      */
     drawImages(images){
         let i = this.current_img % images.length;
@@ -216,6 +369,19 @@ class MovableObject{
         this.img = this.image_cache[path];
         this.current_img++;
     }
+
+    /**
+     * Used only for the attack animation.
+     * Change {@link MovableObject#img} to the next img of the array.
+     * @param {array} images - array with paths (e.g {@link MovableObject#IMAGES_STAYING}).
+     */
+    drawAttackImages(images){
+        let i = this.current_attack_img % images.length;
+        let path = images[i];
+        this.img = this.image_cache[path];
+        this.current_attack_img++;
+    }
+   
 }</code></pre>
         </article>
     </section>
@@ -226,13 +392,13 @@ class MovableObject{
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="Heart.html">Heart</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="Poison.html">Poison</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="StaticObject.html">StaticObject</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#checkIfKeyIsPressed">checkIfKeyIsPressed</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#keyDown">keyDown</a></li><li><a href="global.html#keyUp">keyUp</a></li><li><a href="global.html#LEVEL1">LEVEL1</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossMini.html">EndbossMini</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="Heart.html">Heart</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="Poison.html">Poison</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="StaticObject.html">StaticObject</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#cannotPlay">cannotPlay</a></li><li><a href="global.html#canvas">canvas</a></li><li><a href="global.html#checkIfKeyIsPressed">checkIfKeyIsPressed</a></li><li><a href="global.html#checkIfRestartIsPressed">checkIfRestartIsPressed</a></li><li><a href="global.html#checkMobil">checkMobil</a></li><li><a href="global.html#game_sound">game_sound</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#getMousePosition">getMousePosition</a></li><li><a href="global.html#goFullScreen">goFullScreen</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isMobile">isMobile</a></li><li><a href="global.html#keyboard">keyboard</a></li><li><a href="global.html#keyDown">keyDown</a></li><li><a href="global.html#keyUp">keyUp</a></li><li><a href="global.html#LEVEL1">LEVEL1</a></li><li><a href="global.html#showCanvas">showCanvas</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#starting">starting</a></li><li><a href="global.html#world">world</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Apr 08 2022 11:01:12 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Tue May 03 2022 18:04:37 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

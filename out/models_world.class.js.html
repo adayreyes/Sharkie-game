@@ -65,6 +65,33 @@ class World{
      * @type {number}
      */
     camera_x = 0;
+
+    throwable_objects = [];
+    poison_bottles = [];
+
+    health_empty = false;
+    coins_full = false;
+    poisons_full = false;
+    poisons_empty = false;
+
+    start = false;
+    stop = false;
+
+    win_img = new Image();
+    lose_img = new Image();
+    try_again_img = new Image();
+
+    hurt_sound = new Audio("audio/hurt.mp3");
+    slap_sound = new Audio("audio/slap.mp3");
+    bubble_sound = new Audio("audio/bubble.mp3");
+    electro_sound = new Audio("audio/electro.mp3");
+    bottle_sound = new Audio("audio/bottle.mp3");
+    coin_sound = new Audio("audio/coin.mp3");
+    life_sound = new Audio("audio/life.mp3");
+    win_sound = new Audio("audio/win.mp3");
+    gameover_sound = new Audio("audio/gameover.mp3");
+    endboss_appears_sound = new Audio("audio/endboss_appears.mp3");
+    endboss_hurt_sound = new Audio("audio/endboss_hurt.mp3");
     
     /**
      * Set the values of {@link World#canvas} and {@link World#keyboard}.
@@ -74,11 +101,15 @@ class World{
     constructor(canvas,keyboard){
         this.ctx = canvas.getContext("2d");
         this.canvas = canvas;
+        this.win_img.src = "img/6.Botones/Try again/Mesa de trabajo 1.png";
+        this.lose_img.src = "img/6.Botones/Tittles/Game Over/Recurso 13.png";
+        this.try_again_img.src = "img/6.Botones/Try again/Recurso 17.png";
         this.keyboard = keyboard;
         this.draw();
         this.setWorld();
         this.checkCollisions();
-        
+        this.throwBubbles();
+        this.endbossAppearsSound();  
     }
 
     /**
@@ -92,35 +123,328 @@ class World{
      * Draw all the objects in the canvas
      */
     draw(){
+        let self = this;
         this.ctx.clearRect(0,0, this.canvas.width,this.canvas.height);
         this.ctx.translate(this.camera_x,0);
+        this.fillMap();
+        this.ctx.translate(-this.camera_x,0);
+        let req = requestAnimationFrame(function() {
+            self.draw()
+        })
+        if(this.stop){
+            cancelAnimationFrame(req);
+        }
+    }
+    
+    fillMap(){
+        this.addGroupsOfObjectsToMap();
+        this.addToMap(this.level.endboss);
+        this.addToMap(this.character);
+    }
+    
+    addGroupsOfObjectsToMap(){
         this.addObjectsToMap(this.level.background_objects);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.items.coins);
         this.addObjectsToMap(this.level.items.poisons);
         this.addObjectsToMap(this.level.items.hearts);
         this.addObjectsToMap(this.level.statusbars);
-        this.addToMap(this.character);
-        this.ctx.translate(-this.camera_x,0);
-        
-        let self = this;
-        requestAnimationFrame(function() {
-            self.draw()
-        })
+        this.addObjectsToMap(this.throwable_objects);
     }
-
+    
     /**
      * Check if the hitbox from each {@link Enemy} is colliding with the hitbox from the {@link Character}
      */
     checkCollisions(){
-        setInterval(() => {
+        this.collisionWithEnemy();
+        this.editHealthbar();
+        this.collisionWithCoin();
+        this.collisionWithPoison();
+        this.collisionWithHeart();
+        this.bubbleCollisionWithEnemies();
+        this.bubbleCollisionWithEndboss();
+        this.slapEnemies();
+    }
+
+    increaseStatusbar(i){
+        this.level.statusbars[i].current_img ++;
+        this.level.statusbars[i].img = this.level.statusbars[i].image_cache[this.level.statusbars[i].IMAGES[this.level.statusbars[i].current_img]];
+    }
+
+    decreaseStatusbar(i){
+        this.level.statusbars[i].current_img --;
+        this.level.statusbars[i].img = this.level.statusbars[i].image_cache[this.level.statusbars[i].IMAGES[this.level.statusbars[i].current_img]];
+    }
+    
+    collisionWithEnemy(){
+        let interval = setInterval(() => {
             this.level.enemies.forEach(enemy =>{
-                if(this.character.isColliding(enemy)){
-                    this.character.hit();
-                    enemy.hit();
+                if(this.character.sharkieIsColliding(enemy) &amp;&amp; !this.character.isSlapping() &amp;&amp; !this.level.endboss.dead){
+                    this.checkEnemy(enemy);
+                }
+                this.collisionWithEndboss()
+            })
+        }, 150);
+    }
+    
+    checkEnemy(enemy){
+        if(enemy instanceof PufferFish &amp;&amp; !enemy.dead &amp;&amp; !this.character.killed &amp;&amp; !this.character.dead){
+            this.character.hit();
+            this.hurt_sound.play();
+        }
+        if(enemy instanceof JellyFish &amp;&amp; !enemy.dead &amp;&amp; !this.character.killed &amp;&amp; !this.character.dead){
+            this.character.shock();
+            this.electro_sound.play();
+        }
+    }
+
+    collisionWithEndboss(){
+        if(this.character.sharkieIsCollidingWithEndboss(this.level.endboss) &amp;&amp; !this.character.killed &amp;&amp; !this.character.dead &amp;&amp; !this.level.endboss.dead){
+            this.character.kill();
+        }
+    }
+
+    editHealthbar(){
+        let interval = setInterval(() => {
+            this.level.enemies.forEach(enemy => {
+                if(this.character.sharkieIsColliding(enemy) &amp;&amp; !this.character.isSlapping() &amp;&amp; !this.level.endboss.dead){
+                    this.checkHealth();  
+                }
+                })
+                if(this.character.sharkieIsCollidingWithEndboss(this.level.endboss) &amp;&amp; !this.level.endboss.dead){
+                    this.hurt_sound.play();
+                    for (let i = 0; i &lt; 3; i++) {this.checkHealth()};
+                }
+        }, 500);
+    }
+    
+    checkHealth(){
+        if(this.level.statusbars[0].current_img &lt;= 0){
+            this.level.statusbars[0].current_img = 0;
+            this.health_empty = true;
+            this.checkIfSharkieIsBeingKilled();
+            this.checkIfSharkieIsDying();
+        }
+        if(!this.health_empty){
+            this.decreaseStatusbar(0)
+        } 
+    }
+    
+    checkIfSharkieIsDying(){
+         if(this.character.isHurt() &amp;&amp; !this.character.killed || this.character.isElectrocuted() &amp;&amp; !this.character.killed){
+             this.character.dead = true;
+             this.gameOver()
+         }
+     }
+
+     checkIfSharkieIsBeingKilled(){
+         if(this.character.isBeingKilled()){
+             this.character.killed = true;
+             this.gameOver()
+         }   
+     }
+
+     gameOver(){
+         setTimeout(() => {
+             this.stop = true;
+             setTimeout(() => {
+                 this.drawGameOverImage();
+                 game_sound.pause();
+                }, 300);
+            }, 3000);
+            checkIfRestartIsPressed();
+    }
+        
+    drawGameOverImage(){
+        if(this.level.endboss.dead){
+            this.ctx.drawImage(this.win_img ,0,0,720,480);  
+            this.ctx.drawImage(this.try_again_img,210,360,300,80);  
+            this.win_sound.play();      
+            } else{
+                this.ctx.drawImage(this.lose_img ,20,80,670,200);        
+                this.ctx.drawImage(this.try_again_img,210,360,300,80);
+                this.gameover_sound.play();        
+        }      
+     }
+    
+    collisionWithCoin(){
+        let interval = setInterval(() => {
+            this.level.items.coins.forEach(coin =>{
+                if(this.character.sharkieIsColliding(coin)){
+                   this.checkCoins(coin);
                 }
             })
         }, 200);
+    }
+
+    checkCoins(coin){
+        if(this.level.statusbars[2].current_img == 5){
+            this.level.statusbars[2].current_img = 4;
+            this.coins_full = true;
+        }
+        if(!this.coins_full){
+            coin.y = -50
+            this.increaseStatusbar(2);
+            this.coin_sound.play();
+        }
+    }
+
+    collisionWithHeart(){
+        let interval = setInterval(() => {
+            this.level.items.hearts.forEach(heart =>{
+                if(this.character.sharkieIsColliding(heart)){
+                    if(this.level.statusbars[0].current_img &lt; 5){
+                    heart.y = -50
+                    this.increaseStatusbar(0);
+                    this.life_sound.play();
+                    }
+                }
+            })
+        }, 200);
+    }
+
+    collisionWithPoison(){
+        let interval = setInterval(() => {
+            this.level.items.poisons.forEach(poison =>{
+                if(this.character.sharkieIsColliding(poison)){
+                    this.checkPoisons(poison);
+                }
+            })
+        }, 200);
+    }
+
+    checkPoisons(poison){
+        if(this.level.statusbars[1].current_img == 5){
+            this.poisons_full = true;
+        }
+        if(this.level.statusbars[1].current_img &lt; 5){
+            this.poisons_full = false;
+        }
+        if(!this.poisons_full){
+            poison.y = -100
+            this.increaseStatusbar(1);
+            this.poison_bottles.push("bottle");
+            this.bottle_sound.play();
+        }
+    }
+
+
+    bubbleCollisionWithEnemies(){
+        let interval = setInterval(() => {
+            this.throwable_objects.forEach(bubble =>{
+                this.level.enemies.forEach(enemy =>{
+                    this.checkIfBubbleIsCollidingWithEnemy(enemy,bubble);
+                })
+            })
+        }, 50);
+    }
+
+    checkIfBubbleIsCollidingWithEnemy(enemy,bubble){
+        if(bubble.isColliding(enemy)){
+            bubble.y = -100;
+            setInterval(() => {
+                this.enemyDeadAnimation(enemy);
+            }, 50);
+        } else{
+            setTimeout(() => {
+                bubble.y = -100;
+            }, 500);
+        }
+    }
+    
+    enemyDeadAnimation(enemy){
+        enemy.drawImages(enemy.IMG_DEAD);
+                enemy.dead = true;
+                if(enemy.y > -200){
+                    enemy.y -= 20;
+                    enemy.x -= 50;
+                }
+    }
+
+    bubbleCollisionWithEndboss(){
+        let interval = setInterval(() => {
+            this.throwable_objects.forEach(bubble => {
+                if(bubble.isCollidingWithEndboss(this.level.endboss)){
+                    bubble.y = -100;
+                    this.endboss_hurt_sound.play();
+                    this.level.endboss.hit();
+                    this.editEndbossbar();
+                }
+            });
+        }, 50);
+    }
+
+    editEndbossbar(){
+        if(this.level.statusbars[3].current_img > 0){
+            this.decreaseStatusbar(3);
+        } else{
+            this.level.endboss.dead = true;
+            this.gameOver()
+        }
+    }
+
+
+    throwBubbles(){
+        setInterval(() => {
+            if(this.keyboard.D){
+                if(!this.character.isAttacking()){
+                    this.character.attack();
+                    this.setNewBubble();
+                    setTimeout(() => {
+                     this.bubble_sound.play();
+                     }, 400);  
+                }
+            }
+        }, 100);
+    }
+
+    setNewBubble(){
+        if(this.poison_bottles.length != 0){
+            this.poison_bottles.pop();
+            this.decreaseStatusbar(1);
+            setTimeout(() => {
+                if(this.character.other_direction){
+                    this.throwable_objects.push(new ThrowableObject(this.character.x - 250,this.character.y,true))
+                } else{
+                    this.throwable_objects.push(new ThrowableObject(this.character.x,this.character.y,false))
+                }
+            }, 600);
+        }
+    }
+
+    slapEnemies(){
+        setInterval(() => {
+            if(this.keyboard.SPACE){
+                if(!this.character.isSlapping()){
+                    this.character.slap();
+                    this.checkSlapCollision();
+                    setTimeout(() => {
+                        this.slap_sound.play();
+                    }, 400);
+                }
+            }
+        }, 100);
+    }
+
+    checkSlapCollision(){
+        this.level.enemies.forEach(enemy =>{
+            if(this.character.sharkieIsInRange(enemy)){
+               setTimeout(() => {
+                setInterval(() => {
+                    this.enemyDeadAnimation(enemy);
+                }, 50);
+               }, 500);
+            }
+        })
+    }
+
+    endbossAppearsSound(){
+        let interval = setInterval(() => {
+            if(this.character.x > 3550){
+                this.endboss_appears_sound.play();
+                clearInterval(interval)
+            }
+        }, 300);
     }
 
     /**
@@ -142,16 +466,9 @@ class World{
            this.flipImage(mo);
         } 
         mo.draw(this.ctx);
-        if(mo instanceof Character){
-            mo.drawSharkieFrame(this.ctx);
-        }
-        if(mo instanceof Enemy){
-            mo.drawFrame(this.ctx)
-        }
         if(mo.other_direction){
            this.flipImageBack(mo);
-        }
-       
+        } 
     }
 
     /**
@@ -183,13 +500,13 @@ class World{
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="Heart.html">Heart</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="Poison.html">Poison</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="StaticObject.html">StaticObject</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#checkIfKeyIsPressed">checkIfKeyIsPressed</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#keyDown">keyDown</a></li><li><a href="global.html#keyUp">keyUp</a></li><li><a href="global.html#LEVEL1">LEVEL1</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossMini.html">EndbossMini</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="Heart.html">Heart</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="Poison.html">Poison</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="StaticObject.html">StaticObject</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#cannotPlay">cannotPlay</a></li><li><a href="global.html#canvas">canvas</a></li><li><a href="global.html#checkIfKeyIsPressed">checkIfKeyIsPressed</a></li><li><a href="global.html#checkIfRestartIsPressed">checkIfRestartIsPressed</a></li><li><a href="global.html#checkMobil">checkMobil</a></li><li><a href="global.html#game_sound">game_sound</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#getMousePosition">getMousePosition</a></li><li><a href="global.html#goFullScreen">goFullScreen</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isMobile">isMobile</a></li><li><a href="global.html#keyboard">keyboard</a></li><li><a href="global.html#keyDown">keyDown</a></li><li><a href="global.html#keyUp">keyUp</a></li><li><a href="global.html#LEVEL1">LEVEL1</a></li><li><a href="global.html#showCanvas">showCanvas</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#starting">starting</a></li><li><a href="global.html#world">world</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Apr 08 2022 11:01:12 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Tue May 03 2022 18:04:37 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -34,19 +34,17 @@ class Character extends MovableObject{
     x = -40;
     y = 60;
     width = 300;
-    speed = 10;
+    speed = 4;
     height = 300;
     world;
-    IMAGES_STAYING = ["img/1.Sharkie/3.Swim/1.png",
+
+    IMAGES_SWIMMING = ["img/1.Sharkie/3.Swim/1.png",
     "img/1.Sharkie/3.Swim/2.png",
     "img/1.Sharkie/3.Swim/3.png",
     "img/1.Sharkie/3.Swim/4.png",
     "img/1.Sharkie/3.Swim/5.png",
     "img/1.Sharkie/3.Swim/6.png"];
-    /**
-     * Array with all the dead-images paths
-     * @type {Array}
-     */
+    
     IMAGES_DEAD = [
         "img/1.Sharkie/6.dead/1.Poisoned/1.png",
         "img/1.Sharkie/6.dead/1.Poisoned/2.png",
@@ -60,29 +58,115 @@ class Character extends MovableObject{
         "img/1.Sharkie/6.dead/1.Poisoned/10.png",
         "img/1.Sharkie/6.dead/1.Poisoned/11.png",
         "img/1.Sharkie/6.dead/1.Poisoned/12.png",
-    ]
-    /**
-     * Array with all the hurt-images paths
-     * @type {Array}
-     */
+    ];
+
+    IMAGES_FLOATING = [
+        "img/1.Sharkie/1.IDLE/1.png",
+        "img/1.Sharkie/1.IDLE/2.png",
+        "img/1.Sharkie/1.IDLE/3.png",
+        "img/1.Sharkie/1.IDLE/4.png",
+        "img/1.Sharkie/1.IDLE/5.png",
+        "img/1.Sharkie/1.IDLE/6.png",
+        "img/1.Sharkie/1.IDLE/7.png",
+        "img/1.Sharkie/1.IDLE/8.png",
+        "img/1.Sharkie/1.IDLE/9.png",
+        "img/1.Sharkie/1.IDLE/10.png",
+        "img/1.Sharkie/1.IDLE/11.png",
+        "img/1.Sharkie/1.IDLE/12.png",
+        "img/1.Sharkie/1.IDLE/13.png",
+        "img/1.Sharkie/1.IDLE/14.png",
+        "img/1.Sharkie/1.IDLE/15.png",
+        "img/1.Sharkie/1.IDLE/16.png",
+        "img/1.Sharkie/1.IDLE/17.png",
+        "img/1.Sharkie/1.IDLE/18.png",
+    ];
+
+    IMAGES_ATTACK = [
+        "img/1.Sharkie/4.Attack/Fin slap/1.png",
+        "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/1.png",
+        "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/2.png",
+        "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/3.png",
+        "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/4.png",
+        "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/5.png",
+        "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/6.png",
+        "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/7.png",
+        "img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/8.png"
+    ];
+   
     IMAGES_HURT = [
         "img/1.Sharkie/5.Hurt/1.Poisoned/1.png",
         "img/1.Sharkie/5.Hurt/1.Poisoned/2.png",
         "img/1.Sharkie/5.Hurt/1.Poisoned/3.png",
         "img/1.Sharkie/5.Hurt/1.Poisoned/4.png",
-        "img/1.Sharkie/3.Swim/1.png"
+    ];
+
+    /**
+     * Array with all image paths for the hurt animation.
+     * @see {@link Character#hurtAnimation}.
+     * @type {Array}
+     */
+    IMAGES_SHOCK = [
+        "img/1.Sharkie/5.Hurt/2.Electric shock/1.png",
+        "img/1.Sharkie/5.Hurt/2.Electric shock/2.png",
+        "img/1.Sharkie/5.Hurt/2.Electric shock/3.png"
+    ];
+
+    /**
+     * Array with all image paths for the slap animation.
+     * @see {@link Character#attackAnimation}.
+     * @type {Array}
+     */
+    IMAGES_SLAPPING = [
+        "img/1.Sharkie/4.Attack/Fin slap/1.png",
+        "img/1.Sharkie/4.Attack/Fin slap/2.png",
+        "img/1.Sharkie/4.Attack/Fin slap/3.png",
+        "img/1.Sharkie/4.Attack/Fin slap/4.png",
+        "img/1.Sharkie/4.Attack/Fin slap/5.png",
+        "img/1.Sharkie/4.Attack/Fin slap/6.png",
+        "img/1.Sharkie/4.Attack/Fin slap/7.png",
+        "img/1.Sharkie/4.Attack/Fin slap/8.png"
+    ];
+
+    /**
+     * Array with all image paths for the kill animation.
+     * @see {@link Character#killedAnimation}.
+     * @type {Array}
+     */
+    IMAGES_KILLED = [
+        "img/1.Sharkie/6.dead/2.Electro_shock/7.png",
+        "img/1.Sharkie/6.dead/2.Electro_shock/8.png",
+        "img/1.Sharkie/6.dead/2.Electro_shock/9.png",
+        "img/1.Sharkie/6.dead/2.Electro_shock/10.png"
     ]
+
+    /**
+     * Used to know if Sharkie is moving
+     * @type {Boolean}
+     */
+    isMoving = false;
+
+    /**
+     * Used to know if Sharkie is been killed
+     * @type {Boolean}
+     */
+    killed = false;
+
     /**
      * Audio that is played when Sharkie is swimming.
      * @type {Audio}
      */
     swimming_sound = new Audio("audio/swimming.mp3");
-
+    
     constructor(){
         super().loadImage("img/1.Sharkie/3.Swim/1.png");
-        this.loadImages(this.IMAGES_STAYING);
+        this.loadImages(this.IMAGES_SWIMMING);
+        this.loadImages(this.IMAGES_FLOATING);
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_HURT);
+        this.loadImages(this.IMAGES_SHOCK);
+        this.loadImages(this.IMAGES_ATTACK);
+        this.loadImages(this.IMAGES_SLAPPING);
+        this.loadImages(this.IMAGES_KILLED);
         this.animate();
     }
     
@@ -93,59 +177,204 @@ class Character extends MovableObject{
         this.moveCharacter();
         this.animateMovement();
     } 
+    
+    /**
+     * Check if an object is near to Sharkie.
+     * Used for @see {@link World#checkSlapCollision}.
+     * @param {object} mo - {@link MovableObject}. 
+     * @returns {boolean}
+     */
+    sharkieIsInRange(mo){
+        return this.x + this.width > mo.x &amp;&amp; this.y+160 + this.height-250 > mo.y &amp;&amp; this.x &lt; mo.x &amp;&amp; this.y+160 &lt; mo.y + mo.height
+    }
 
     /**
-     * Move Sharkie around the map and plays {@link Character#swimming_sound}
+     * Move Sharkie around the map.
      */
     moveCharacter(){
-        setInterval(()=>{
-            
-            if(this.world.keyboard.RIGHT &amp;&amp; this.x &lt; 4300){
-                this.other_direction = false;
-                this.x += this.speed;
-                this.world.level.statusbars.forEach(element => {
-                    element.x += this.speed
-                });
-                this.swimming_sound.play();
+        let interval = setInterval(()=>{
+            if(!this.dead &amp;&amp; !this.isSlapping() &amp;&amp; !this.killed){
+                this.moveAnimationRight();
+                this.moveAnimationLeft();
+                this.moveAnimationUp();
+                this.moveAnimationDown(); 
+                this.world.camera_x = -this.x;
             }
-            if(this.world.keyboard.LEFT &amp;&amp; this.x > -700){
-                this.other_direction = true;
-                this.x -= this.speed;
-                this.world.level.statusbars.forEach(element => {
-                    element.x -= this.speed
-                });
-                this.swimming_sound.play();
- 
-            }
-            if(this.world.keyboard.UP &amp;&amp; this.y > -140){
-                this.y -= this.speed;
-                this.swimming_sound.play();
- 
-            }
-            if(this.world.keyboard.DOWN &amp;&amp; this.y &lt; 250){
-                this.y += this.speed;
-                this.swimming_sound.play();
- 
-            }
-            this.world.camera_x = -this.x;
         }, 1000/60)
     }
 
+    /**
+     * Move Sharkie to the right if the right arrow is pressed.
+     * @see {@link game#checkIfKeyIsPressed}
+     */
+    moveAnimationRight(){
+        if(this.world.keyboard.RIGHT &amp;&amp; this.x &lt; 4300){
+            this.other_direction = false;
+            this.x += this.speed;
+            this.world.level.statusbars.forEach(element => {
+                element.x += this.speed
+            });
+            this.swimming_sound.play();
+        }
+    }
+    
+    /**
+     * Move Sharkie to the left if the left arrow is pressed.
+     * @see {@link game#checkIfKeyIsPressed}
+     */
+    moveAnimationLeft(){
+        if(this.world.keyboard.LEFT &amp;&amp; this.x > -700){
+            this.other_direction = true;
+            this.x -= this.speed;
+            this.world.level.statusbars.forEach(element => {
+                element.x -= this.speed
+            });
+            this.swimming_sound.play();
+
+        }
+    }
+
+    /**
+     * Move Sharkie up if the up arrow is pressed.
+     * @see {@link game#checkIfKeyIsPressed}
+     */
+    moveAnimationUp(){
+        if(this.world.keyboard.UP &amp;&amp; this.y > -140){
+            this.y -= this.speed;
+            this.swimming_sound.play();
+        }
+    }
+
+    /**
+     * Move Sharkie down if the right arrow is pressed.
+     * @see {@link game#checkIfKeyIsPressed}
+     */
+    moveAnimationDown(){
+        if(this.world.keyboard.DOWN &amp;&amp; this.y &lt; 250){
+            this.y += this.speed;
+            this.swimming_sound.play();
+        }
+    }
+
      /**
-     * Check if Sharkie is moving, hurt or dead and draw the respective images.
+     * Check if Sharkie is moving, hurt, attacking or dead and draw the respective images.
      */
     animateMovement(){
-        setInterval(()=>{
-            if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN){
-                this.drawImages(this.IMAGES_STAYING)
-            } else if(this.dead == true){
-                this.drawImages(this.IMAGES_DEAD)
-            } else if(this.isHurt()){
-                this.drawImages(this.IMAGES_HURT);
+        setInterval(() => {
+            if(!this.dead &amp;&amp; !this.killed){
+                this.hurtAnimation();
+                this.floatingAnimation();
             }
-        },150)
+            this.checkDeadAnimation()
+        }, 200);
+        setInterval(() => {
+            if(!this.dead &amp;&amp; !this.killed){
+                this.moveAnimation();
+                this.attackAnimation();
+            }
+        }, 100); 
+    }
+
+    /**
+     * Check if Sharkie died from {@link Enemy} or {@link Endboss}.
+     */
+    checkDeadAnimation(){
+        if(this.dead){
+            this.deadAnimation();  
+        }
+        if(this.killed){
+            this.killedAnimation();
+        }
+    }
+
+    /**
+     * Play the animation when Sharkie is moving.
+     */
+    moveAnimation(){
+        if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN){
+            if(!this.isHurt() &amp;&amp; !this.isElectrocuted()){
+                this.drawImages(this.IMAGES_SWIMMING);
+                this.isMoving = true;
+            }
+        } else{
+            this.isMoving = false;
+        }
+    }
+
+    /**
+     * Play the animation when Sharkie is attacking.
+     */
+    attackAnimation(){
+        if(this.isAttacking()){
+            this.drawAttackImages(this.IMAGES_ATTACK);
+        } else if(this.isSlapping()){
+            this.drawAttackImages(this.IMAGES_SLAPPING);
+        } else{
+            this.current_attack_img = 0;
+        }
+    }
+
+    /**
+     * Play the animation when Sharkie is being hurt.
+     */
+    hurtAnimation(){
+        if(this.isHurt() &amp;&amp; !this.isSlapping()){
+            this.drawImages(this.IMAGES_HURT); 
+         }
+         else if(this.isElectrocuted() &amp;&amp; !this.isSlapping()){
+             this.drawImages(this.IMAGES_SHOCK);  
+         }
+    }
+
+    /**
+     * Play the animation when Sharkie is not moving.
+     */
+    floatingAnimation(){
+        if(!this.isMoving &amp;&amp; !this.dead &amp;&amp; !this.killed &amp;&amp; !this.isAttacking() &amp;&amp; !this.isHurt() &amp;&amp; !this.isElectrocuted() &amp;&amp; !this.isSlapping()){
+            this.drawImages(this.IMAGES_FLOATING)
+        }
+    }
+
+    /**
+     * Play the animation when Sharkie dies.
+     */
+    deadAnimation(){
+            if(!this.stop){
+                this.drawImages(this.IMAGES_DEAD);
+            }
+            setTimeout(() => {
+                this.stop = true;
+                this.loadImage("img/1.Sharkie/6.dead/1.Poisoned/12.png")
+            }, 1000);
+    }
+
+    /**
+     * Play the animation when Sharkie is killed.
+     */
+    killedAnimation(){
+        if(!this.stop){
+            this.drawImages(this.IMAGES_KILLED);
+        }
+        this.moveBonesToGround();
+        setTimeout(() => {
+            this.stop = true;
+            this.loadImage("img/1.Sharkie/6.dead/2.Electro_shock/10.png")
+        }, 500);
+    }
+
+    /**
+     * Play the animation when Shakie is killed and the bones go to the bottom.
+     */
+    moveBonesToGround(){
+        if(this.y &lt; 150){
+            this.y += 30
+        }
+        if(this.y > 200){
+            this.y -= 30
+        }
     }
 }
+
 
 </code></pre>
         </article>
@@ -157,13 +386,13 @@ class Character extends MovableObject{
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="Heart.html">Heart</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="Poison.html">Poison</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="StaticObject.html">StaticObject</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#checkIfKeyIsPressed">checkIfKeyIsPressed</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#keyDown">keyDown</a></li><li><a href="global.html#keyUp">keyUp</a></li><li><a href="global.html#LEVEL1">LEVEL1</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossMini.html">EndbossMini</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="Heart.html">Heart</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="Poison.html">Poison</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="StaticObject.html">StaticObject</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#cannotPlay">cannotPlay</a></li><li><a href="global.html#canvas">canvas</a></li><li><a href="global.html#checkIfKeyIsPressed">checkIfKeyIsPressed</a></li><li><a href="global.html#checkIfRestartIsPressed">checkIfRestartIsPressed</a></li><li><a href="global.html#checkMobil">checkMobil</a></li><li><a href="global.html#game_sound">game_sound</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#getMousePosition">getMousePosition</a></li><li><a href="global.html#goFullScreen">goFullScreen</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isMobile">isMobile</a></li><li><a href="global.html#keyboard">keyboard</a></li><li><a href="global.html#keyDown">keyDown</a></li><li><a href="global.html#keyUp">keyUp</a></li><li><a href="global.html#LEVEL1">LEVEL1</a></li><li><a href="global.html#showCanvas">showCanvas</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#starting">starting</a></li><li><a href="global.html#world">world</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Apr 08 2022 11:01:12 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Tue May 03 2022 18:04:37 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>
