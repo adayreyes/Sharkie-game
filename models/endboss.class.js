@@ -105,7 +105,7 @@ class Endboss extends MovableObject{
     };
 
     /**
-     * Check if {@link Endboss#last_attack} was called in the last 1s.
+     * Checks if {@link Endboss#last_attack} was called in the last 1s.
      * @returns {boolean} 
      */
     endbossIsAttacking(){
@@ -135,7 +135,7 @@ class Endboss extends MovableObject{
     
 
     /**
-     * Check if the Endboss is dead and play the respective animation.
+     * Checks if the Endboss is dead and play the respective animation.
      */
     animateMovement(){
         setInterval(() => {
@@ -164,7 +164,7 @@ class Endboss extends MovableObject{
     }
 
     /**
-     * Check if the Endboss is attacking and play the animation.
+     * Checks if the Endboss is attacking and play the animation.
      */
     attackAnimation(){
         if(this.startAttack && !this.isHurt() && this.x - world.character.x < 400 && this.x - world.character.x > 50){
@@ -176,7 +176,7 @@ class Endboss extends MovableObject{
     }
 
     /**
-     * Check if the Endboss is being hurt and play the animation.
+     * Checks if the Endboss is being hurt and play the animation.
      */
     hurtAnimation(){
         if(this.isHurt()){
@@ -185,7 +185,7 @@ class Endboss extends MovableObject{
     }
 
     /**
-     * Check if the Endboss is dying and play the animation.
+     * Checks if the Endboss is dying and play the animation.
      */
     deadAnimation(){
         if(!this.stop){
@@ -198,7 +198,7 @@ class Endboss extends MovableObject{
     }
 
     /**
-     * Check if {@link Character} reachs the position of the Endboss and make it appear.
+     * Checks if {@link Character} reachs the position of the Endboss and make it appear.
      */
     checkFirstContact(){
         if(world.character.x > 3550){

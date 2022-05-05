@@ -113,11 +113,13 @@ class MovableObject{
 
     /**
      * Used to know which attack image is being used
+     * @type {Number}
      */
     current_attack_img = 0;
 
     /**
      * Used to stop the game when {@link Character} or {@link Endboss} is dead
+     * @type {Boolean}
      */
     stop = false;
     
@@ -153,7 +155,7 @@ class MovableObject{
     }
 
     /**
-     * Check if Sharkie is colliding with other {@link MovableObject}
+     * Checks if Sharkie is colliding with other {@link MovableObject}
      * @param {Object} mo - {@link MovableObject}
      * @returns {Boolean}
      */
@@ -162,7 +164,7 @@ class MovableObject{
     }
 
     /**
-     * Check if an object is colling with other {@link MovableObject}
+     * Checks if an object is colling with other {@link MovableObject}
      * @param {Object} mo - {@link MovableObject}
      * @returns {Boolean}
      */
@@ -171,7 +173,7 @@ class MovableObject{
     }
 
     /**
-     * Check if an object ist colliding with the endboss.
+     * Checks if an object ist colliding with the endboss.
      * @param {Object} endboss - endboss object.
      * @returns {Boolean}
      */
@@ -180,7 +182,7 @@ class MovableObject{
     }
 
     /**
-     * Check if Sharkie is colliding with the endboss.
+     * Checks if Sharkie is colliding with the endboss.
      * @param {Object} endboss - endboss object.
      * @returns {Boolean}
      */
@@ -221,7 +223,7 @@ class MovableObject{
     }
 
     /**
-     * Check if {@link MovableObject#kill} was called in the last 1s.
+     * Checks if {@link MovableObject#kill} was called in the last 1s.
      * @returns {boolean} 
      */
     isBeingKilled(){
@@ -231,7 +233,7 @@ class MovableObject{
     }
 
     /**
-     * Check if {@link MovableObject#hit} was called in the last 1s.
+     * Checks if {@link MovableObject#hit} was called in the last 1s.
      * @returns {boolean} 
      */
     isHurt(){
@@ -241,7 +243,7 @@ class MovableObject{
     }
 
     /**
-     * Check if {@link MovableObject#shock} was called in the last 1s.
+     * Checks if {@link MovableObject#shock} was called in the last 1s.
      * @returns {boolean} 
      */
     isElectrocuted(){
@@ -251,7 +253,7 @@ class MovableObject{
     }
 
     /**
-     * Check if {@link MovableObject#attack} was called in the last 1s.
+     * Checks if {@link MovableObject#attack} was called in the last 1s.
      * @returns {boolean} 
      */
     isAttacking(){
@@ -261,7 +263,7 @@ class MovableObject{
     }
 
     /**
-     * Check if {@link MovableObject#slap} was called in the last 1s.
+     * Checks if {@link MovableObject#slap} was called in the last 1s.
      * @returns {boolean} 
      */
     isSlapping(){

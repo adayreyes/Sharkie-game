@@ -15,7 +15,7 @@ class ThrowableObject extends MovableObject {
     }
     
     /**
-     * Play animation of the bubble moving.
+     * Plays animation of the bubble moving.
      * @see {@link World#setNewBubble}
      */
     throwBubble(){

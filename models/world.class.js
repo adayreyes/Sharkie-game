@@ -38,31 +38,160 @@ class World{
      */
     camera_x = 0;
 
+    /**
+     * Array with the bubbles 
+     * @type {Array}
+     * @see {@link ThrowableObject}
+     */
     throwable_objects = [];
-    poison_bottles = [];
 
+    /**
+     * Array with strings to better control of the function {@link World#throwBubbles}
+     * @type {Array}
+     * @see {@link World#setNewBubble}
+     */
+    poison_bottles = [];
+    /**
+     * Is used to check if the healthbar is empty
+     * @type {Boolean}
+     * @see {@link World#checkHealth}
+     */
     health_empty = false;
+
+    /**
+     * Is used to check if the coinbar is full
+     * @type {Boolean}
+     * @see {@link World#checkCoins}
+     */
     coins_full = false;
+
+     /**
+     * Is used to check if the poisonbar is full
+     * @type {Boolean}
+     * @see {@link World#checkPoisons}
+     */
     poisons_full = false;
+
+     /**
+     * Is used to check if the poisonbar is empty
+     * @type {Boolean}
+     * @see {@link World#checkPoisons}
+     */
     poisons_empty = false;
 
+
+     /**
+     * Is used to check if the game is been started
+     * @type {Boolean}
+     * @see {@link starting}
+     */
     start = false;
+
+    /**
+     * Is used to stop the game
+     * @type {Boolean}
+     * @see {@link World#draw}
+     * @see {@link World#gameOver}
+     */
     stop = false;
 
+
+    /**
+     * Image that it is showed if client wins
+     * @type {Image}
+     * @see {@link World#drawGameOverImage}
+     */
     win_img = new Image();
+
+    /**
+     * Image that it is showed if client loses
+     * @type {Image}
+     * @see {@link World#drawGameOverImage}
+     */
     lose_img = new Image();
+
+    /**
+     * Image used at the end of the game to restart it
+     * @type {Image}
+     * @see {@link World#drawGameOverImage}
+     */
     try_again_img = new Image();
 
+    /**
+     * Sound used when Sharkie is being hurt by {@link PufferFish} or {@link Endboss}
+     * @type {Audio}
+     * @see {@link World#checkEnemy}
+     */
     hurt_sound = new Audio("audio/hurt.mp3");
-    slap_sound = new Audio("audio/slap.mp3");
-    bubble_sound = new Audio("audio/bubble.mp3");
+
+    /**
+     * Sound used when Sharkie is being hurt by {@link JellyFish}
+     * @type {Audio}
+     * @see {@link World#checkEnemy}
+     */
     electro_sound = new Audio("audio/electro.mp3");
+
+    /**
+     * Sound used when Sharkie is slapping
+     * @type {Audio}
+     * @see {@link World#slapEnemies}
+     */
+    slap_sound = new Audio("audio/slap.mp3");
+
+    /**
+     * Sound used when Sharkie throws a bubble
+     * @type {Audio}
+     * @see {@link World#throwBubbles}
+     */
+    bubble_sound = new Audio("audio/bubble.mp3");
+
+    /**
+     * Sound used when Sharkie collects a poison bottle
+     * @type {Audio}
+     * @see {@link World#checkPoisons}
+     */
     bottle_sound = new Audio("audio/bottle.mp3");
+
+    /**
+     * Sound used when Sharkie collects a coin
+     * @type {Audio}
+     * @see {@link World#checkCoins}
+     */
     coin_sound = new Audio("audio/coin.mp3");
+
+    /**
+     * Sound used when Sharkie collects a heart
+     * @type {Audio}
+     * @see {@link World#collisionWithHeart}
+     */
     life_sound = new Audio("audio/life.mp3");
+
+    /**
+     * Sound used when the client wins
+     * @type {Audio}
+     * @see {@link World#drawGameOverImage}
+     */
     win_sound = new Audio("audio/win.mp3");
+
+    /**
+     * Sound used when the client loses
+     * @type {Audio}
+     * @see {@link World#drawGameOverImage}
+     */
     gameover_sound = new Audio("audio/gameover.mp3");
+
+    /**
+     * Sound used when the Endboss appears
+     * @type {Audio}
+     * @see {@link World#endbossAppearsSound}
+     */
     endboss_appears_sound = new Audio("audio/endboss_appears.mp3");
+
+    /**
+     * Sound used when the Endboss is being hurt
+     * @type {Audio}
+     * @see {@link World#bubbleCollisionWithEndboss}
+     */
     endboss_hurt_sound = new Audio("audio/endboss_hurt.mp3");
     
     /**
@@ -108,12 +237,19 @@ class World{
         }
     }
     
+
+    /**
+     * Clean code function
+     */
     fillMap(){
         this.addGroupsOfObjectsToMap();
         this.addToMap(this.level.endboss);
         this.addToMap(this.character);
     }
     
+    /**
+     * Clean code function
+     */
     addGroupsOfObjectsToMap(){
         this.addObjectsToMap(this.level.background_objects);
         this.addObjectsToMap(this.level.enemies);
@@ -125,7 +261,7 @@ class World{
     }
     
     /**
-     * Check if the hitbox from each {@link Enemy} is colliding with the hitbox from the {@link Character}
+     * Checks if the hitbox from each {@link Enemy} is colliding with the hitbox from the {@link Character}
      */
     checkCollisions(){
         this.collisionWithEnemy();
@@ -138,16 +274,30 @@ class World{
         this.slapEnemies();
     }
 
+    /**
+     * Load the next image from the statusbar.
+     * @param {Number} i - index from array @see {@link LEVEL1}
+     * @see {@link StaticObject#IMAGES}
+     */
     increaseStatusbar(i){
         this.level.statusbars[i].current_img ++;
         this.level.statusbars[i].img = this.level.statusbars[i].image_cache[this.level.statusbars[i].IMAGES[this.level.statusbars[i].current_img]];
     }
 
+    /**
+     * Load the previous image from the statusbar.
+     * @param {Number} i - index from array @see {@link LEVEL1}
+     * @see {@link StaticObject#IMAGES}
+     */
     decreaseStatusbar(i){
         this.level.statusbars[i].current_img --;
         this.level.statusbars[i].img = this.level.statusbars[i].image_cache[this.level.statusbars[i].IMAGES[this.level.statusbars[i].current_img]];
     }
-    
+
+
+    /**
+     * Checks if Sharkie is colliding with an enemy.
+     */
     collisionWithEnemy(){
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy =>{
@@ -159,6 +309,10 @@ class World{
         }, 150);
     }
     
+    /**
+     * Checks which enemy is colliding with Sharkie, so that the right animation is played.
+     * @param {Object} enemy - @see {@link JellyFish} @see {@link PufferFish}
+     */
     checkEnemy(enemy){
         if(enemy instanceof PufferFish && !enemy.dead && !this.character.killed && !this.character.dead){
             this.character.hit();
@@ -170,12 +324,19 @@ class World{
         }
     }
 
+    /**
+     * Checks if Sharkie is colliding with the endboss.
+     */
     collisionWithEndboss(){
         if(this.character.sharkieIsCollidingWithEndboss(this.level.endboss) && !this.character.killed && !this.character.dead && !this.level.endboss.dead){
             this.character.kill();
         }
     }
 
+
+    /**
+     * Checks if Sharkie is collinding with an enemy or the endboss to edit the healthbar.
+     */
     editHealthbar(){
         let interval = setInterval(() => {
             this.level.enemies.forEach(enemy => {
@@ -190,6 +351,9 @@ class World{
         }, 500);
     }
     
+    /**
+     * Checks if Sharkie has more life and decrease the healthbar.
+     */
     checkHealth(){
         if(this.level.statusbars[0].current_img <= 0){
             this.level.statusbars[0].current_img = 0;
@@ -202,6 +366,9 @@ class World{
         } 
     }
     
+    /**
+     * Checks if Sharkie has been killed by enemy.
+     */
     checkIfSharkieIsDying(){
          if(this.character.isHurt() && !this.character.killed || this.character.isElectrocuted() && !this.character.killed){
              this.character.dead = true;
@@ -209,6 +376,10 @@ class World{
          }
      }
 
+
+     /**
+      * Checks if Sharkie is been killed by endboss
+      */
      checkIfSharkieIsBeingKilled(){
          if(this.character.isBeingKilled()){
              this.character.killed = true;
@@ -216,6 +387,9 @@ class World{
          }   
      }
 
+     /**
+      * Stops the game and draw the final images.
+      */
      gameOver(){
          setTimeout(() => {
              this.stop = true;
@@ -226,7 +400,9 @@ class World{
             }, 3000);
             checkIfRestartIsPressed();
     }
-        
+    /**
+     * Checks if the client wins or loses and draw the right image.
+     */    
     drawGameOverImage(){
         if(this.level.endboss.dead){
             this.ctx.drawImage(this.win_img ,0,0,720,480);  
@@ -239,6 +415,9 @@ class World{
         }      
      }
     
+    /**
+     * Checks if Sharkie is colliding with a coin.
+     */
     collisionWithCoin(){
         let interval = setInterval(() => {
             this.level.items.coins.forEach(coin =>{
@@ -249,6 +428,10 @@ class World{
         }, 200);
     }
 
+    /**
+     * Modifies the coinbar
+     * @param {Object} coin @see {@link Coin}
+     */
     checkCoins(coin){
         if(this.level.statusbars[2].current_img == 5){
             this.level.statusbars[2].current_img = 4;
@@ -261,6 +444,9 @@ class World{
         }
     }
 
+    /**
+     * Checks if Sharkie is colliding with a heart and modifies the healthbar.
+     */
     collisionWithHeart(){
         let interval = setInterval(() => {
             this.level.items.hearts.forEach(heart =>{
@@ -275,6 +461,9 @@ class World{
         }, 200);
     }
 
+    /**
+     * Checks if Sharkie is colliding with a poison bottle.
+     */
     collisionWithPoison(){
         let interval = setInterval(() => {
             this.level.items.poisons.forEach(poison =>{
@@ -285,6 +474,10 @@ class World{
         }, 200);
     }
 
+    /**
+     * Modifies the poisonbar
+     * @param {Object} poison @see {@link Poison}
+     */
     checkPoisons(poison){
         if(this.level.statusbars[1].current_img == 5){
             this.poisons_full = true;
@@ -300,7 +493,9 @@ class World{
         }
     }
 
-
+    /**
+     * Main function for the bubble collisions
+     */
     bubbleCollisionWithEnemies(){
         let interval = setInterval(() => {
             this.throwable_objects.forEach(bubble =>{
@@ -311,6 +506,11 @@ class World{
         }, 50);
     }
 
+    /**
+     * Checks if the bubble collides with an enemy or not
+     * @param {Object} enemy - @see {@link Enemy}
+     * @param {Object} bubble - @see {@link ThrowableObject}
+     */
     checkIfBubbleIsCollidingWithEnemy(enemy,bubble){
         if(bubble.isColliding(enemy)){
             bubble.y = -100;
@@ -324,6 +524,10 @@ class World{
         }
     }
     
+    /**
+     * Plays the dead animation from the enemy.
+     * @param {Object} enemy - @see {@link Enemy}
+     */
     enemyDeadAnimation(enemy){
         enemy.drawImages(enemy.IMG_DEAD);
                 enemy.dead = true;
@@ -333,6 +537,10 @@ class World{
                 }
     }
 
+    /**
+     * Checks if a bubble is colliding with the endboss.
+     * If it does, the hurt animation from the endboss is played.
+     */
     bubbleCollisionWithEndboss(){
         let interval = setInterval(() => {
             this.throwable_objects.forEach(bubble => {
@@ -346,6 +554,9 @@ class World{
         }, 50);
     }
 
+    /**
+     * Modifies the healthbar from the endboss and end the game if it has no life.
+     */
     editEndbossbar(){
         if(this.level.statusbars[3].current_img > 0){
             this.decreaseStatusbar(3);
@@ -355,7 +566,9 @@ class World{
         }
     }
 
-
+    /**
+     * Plays the throw bubbles animation if the client press the key "D"
+     */
     throwBubbles(){
         setInterval(() => {
             if(this.keyboard.D){
@@ -370,6 +583,10 @@ class World{
         }, 100);
     }
 
+    /**
+     * Create a new bubble to be thrown.
+     * Modifies the poisonbar.
+     */
     setNewBubble(){
         if(this.poison_bottles.length != 0){
             this.poison_bottles.pop();
@@ -384,6 +601,9 @@ class World{
         }
     }
 
+    /**
+     * Plays the slap animation from Sharkie if the client press the spacebar
+     */
     slapEnemies(){
         setInterval(() => {
             if(this.keyboard.SPACE){
@@ -398,6 +618,9 @@ class World{
         }, 100);
     }
 
+    /**
+     * Checks if an enemy is next to Sharkie during the slap animation to kill it.
+     */
     checkSlapCollision(){
         this.level.enemies.forEach(enemy =>{
             if(this.character.sharkieIsInRange(enemy)){
@@ -410,6 +633,9 @@ class World{
         })
     }
 
+    /**
+     * Plays {@link World#endboss_appears_sound} if Sharkie is at the right point.
+     */
     endbossAppearsSound(){
         let interval = setInterval(() => {
             if(this.character.x > 3550){
@@ -426,7 +652,7 @@ class World{
     addObjectsToMap(objects){
         objects.forEach(obj => {
             this.addToMap(obj)
-        })
+        }) 
     }
 
     /**

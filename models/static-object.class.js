@@ -44,6 +44,10 @@ class StaticObject{
      * @type {number}
      */
     current_img = 0;
+    /**
+     * Array with all image paths.
+     * @type {Array}
+     */
     IMAGES;
       /**
      * Create a new image for each element of the array and save this in {@link StaticObject#image_cache}
