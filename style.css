@@ -133,10 +133,14 @@ canvas{
 }
 
 @media(max-height:800px){
-    .explication{
+    h2{
         display: none;
     }
-    h2{
+
+}
+
+@media(max-height:600px){
+    .explication{
         display: none;
     }
 }
